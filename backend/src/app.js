@@ -11,9 +11,16 @@ app.use(helmet());
 
 // Configuración de CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'http://127.0.0.1:5501',
+    'http://localhost:5501'
+  ],
   credentials: true
 }));
+
+
 
 // Rate limiting
 const limiter = rateLimit({
