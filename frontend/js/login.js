@@ -55,30 +55,30 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            // Aquí harás la llamada a tu API backend
-            // Por ahora simulamos un login exitoso
+            // 🔹 Llamar al backend real
             const response = await loginUser(email, password);
 
             if (response.success) {
-                // Login exitoso
-                console.log('Login successful!');
-                
-                // Guardar datos de sesión
-                sessionStorage.setItem('userEmail', email);
-                sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('authToken', response.token || 'mock-token');
+                console.log('Login successful!', response);
 
-                // Obtener el rol guardado previamente (desde role-selection)
-                const selectedRole = localStorage.getItem('selectedRole') || 'rider';
-                
-                // Redirigir según el rol
-                redirectToDashboard(selectedRole);
+                // ✅ Extraer datos reales de la respuesta
+                const user = response.data.user;
+                const token = response.data.token;
+
+                // Guardar datos de sesión
+                sessionStorage.setItem('userEmail', user.correo);
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('authToken', token);
+                sessionStorage.setItem('userName', `${user.nombre} ${user.apellido}`);
+                sessionStorage.setItem('userRole', user.rol);
+
+                // Redirigir según rol
+                redirectToDashboard(user.rol);
             } else {
                 throw new Error(response.message || 'Invalid credentials');
             }
 
         } catch (error) {
-            // Error en el login
             console.error('Login error:', error);
             showError(error.message || 'Invalid credentials. Please try again.');
             
@@ -88,34 +88,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para hacer login (reemplazar con API real)
+    // 🔹 Función actualizada para usar tu API real
     async function loginUser(email, password) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulación de validación
-                // TODO: Reemplazar con fetch a tu backend
-                /*
-                const response = await fetch('http://localhost:3000/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await response.json();
-                return data;
-                */
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ correo: email, password }) // 👈 el backend espera "correo"
+            });
 
-                // Por ahora acepta cualquier email con contraseña >= 6 caracteres
-                if (password.length >= 6) {
-                    resolve({ 
-                        success: true, 
-                        token: 'mock-jwt-token-12345',
-                        user: { email }
-                    });
-                } else {
-                    reject({ message: 'Invalid credentials' });
-                }
-            }, 1500);
-        });
+            const data = await response.json();
+            return data; // el backend ya retorna { success, message, data: { user, token } }
+
+        } catch (error) {
+            console.error('Error connecting to backend:', error);
+            throw new Error('Server error. Please try again later.');
+        }
     }
 
     // Validar formato de email
@@ -128,11 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showError(message) {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
-        
-        // Auto-ocultar después de 5 segundos
-        setTimeout(() => {
-            hideError();
-        }, 5000);
+        setTimeout(() => hideError(), 5000);
     }
 
     // Ocultar mensaje de error
@@ -153,13 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Redirigir al dashboard según el rol
     function redirectToDashboard(role) {
         console.log(`Redirecting to ${role} dashboard...`);
-        
-        if (role === 'driver') {
+
+        if (role === 'driver' || role === 'conductor') {
             window.location.href = '../driver/dashboard.html';
-        } else if (role === 'rider') {
+        } else if (role === 'rider' || role === 'pasajero') {
             window.location.href = '../rider/dashboard.html';
         } else {
-            // Por defecto, ir a rider
             window.location.href = '../rider/dashboard.html';
         }
     }
@@ -176,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Debug: Mostrar info en consola
     console.log('Login page loaded');
     console.log('Selected role from previous page:', localStorage.getItem('selectedRole'));
 });
