@@ -136,16 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Redirigir al dashboard según el rol
     function redirectToDashboard(role) {
-        console.log(`Redirecting to ${role} dashboard...`);
+    console.log(`Redirecting temporarily after login for role: ${role}`);
 
-        if (role === 'driver' || role === 'conductor') {
-            window.location.href = '../driver/dashboard.html';
-        } else if (role === 'rider' || role === 'pasajero') {
-            window.location.href = '../rider/dashboard.html';
-        } else {
-            window.location.href = '../rider/dashboard.html';
-        }
+    if (role === 'driver' || role === 'conductor') {
+        // 🔹 Redirige a cualquier página existente de driver
+        window.location.href = 'profile-view-rider.html';
+    } else if (role === 'rider' || role === 'pasajero') {
+        // 🔹 Redirige a una página existente de rider
+        window.location.href = 'profile-view-rider.html';
+    } else {
+        // 🔹 Si el rol no coincide, redirige a algo neutro
+        window.location.href = 'profile-view-rider.html';
     }
+}
+
 
     // Limpiar mensajes de error al escribir en los inputs
     emailInput.addEventListener('input', hideError);

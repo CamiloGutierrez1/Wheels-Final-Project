@@ -89,11 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // Validar email corporativo (debe contener .edu)
+        /*// Validar email corporativo (debe contener .edu)
         if (!data.email.includes('.edu')) {
             showError('Please use your corporate university email');
             return false;
-        }
+        }*/
 
         // Validar ID universitario (solo números)
         if (!/^\d+$/.test(data.universityId)) {
@@ -123,25 +123,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Registrar usuario rider (API simulada)
-    async function registerRider(data) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // TODO: Reemplazar con llamada real a API
-                /*
-                const response = await fetch('http://localhost:3000/api/auth/register-rider', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                return result;
-                */
-
-                console.log('Registering rider:', data);
-                resolve({ success: true });
-            }, 1000);
+    // Registrar usuario rider (API real)
+async function registerRider(data) {
+    try {
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nombre: data.firstName,
+                apellido: data.lastName,
+                idUniversidad: data.universityId,
+                correo: data.email,
+                password: data.password,
+                telefono: data.phone,
+                rol: 'pasajero', // o 'rider', según cómo lo manejes en tu backend
+            })
         });
+
+        const result = await response.json();
+        console.log('Server response:', result);
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Error al registrar el usuario');
+        }
+
+        // Guardar token o datos si todo salió bien
+        localStorage.setItem('authToken', result.data.token);
+        localStorage.setItem('userName', `${result.data.user.nombre} ${result.data.user.apellido}`);
+        localStorage.setItem('userRole', result.data.user.rol);
+        localStorage.setItem('userEmail', result.data.user.correo);
+
+        return result;
+    } catch (error) {
+        console.error('Error registering rider:', error);
+        throw error;
     }
+}
+
 
     // Mostrar mensaje de error
     function showError(message) {
