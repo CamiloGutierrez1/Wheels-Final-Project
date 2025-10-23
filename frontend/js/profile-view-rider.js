@@ -32,29 +32,64 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para cargar perfil del usuario
     async function loadUserProfile() {
         try {
-            // OPCIÓN 1: Cargar desde API (cuando esté conectado)
-            // const response = await fetch('http://localhost:3000/api/profile', {
-            //     headers: {
-            //         'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
-            //     }
-            // });
-            // const userData = await response.json();
-
-            // OPCIÓN 2: Datos simulados (mientras no hay backend)
+            const authToken = sessionStorage.getItem('authToken');
             const userEmail = sessionStorage.getItem('userEmail');
-            const userRole = 'rider'; // Fijo en rider
             
-            // Intentar obtener datos del registro guardados
-            const registrationData = JSON.parse(localStorage.getItem('registrationData') || '{}');
+            // 🔹 OPCIÓN 1: Intentar obtener perfil completo desde el backend
+            let userData = null;
             
-            const userData = {
-                firstName: registrationData.firstName || 'Hugo',
-                lastName: registrationData.lastName || 'Ocallega',
-                email: userEmail || registrationData.email || 'hugo@gmail.com',
-                universityId: registrationData.universityId || '0000123456',
-                phone: registrationData.phone || '+57 3124785471',
-                role: userRole
-            };
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const profileData = await response.json();
+                    
+                    // Construir userData desde el backend
+                    const user = profileData.data.user;
+                    userData = {
+                        firstName: user.nombre || 'User',
+                        lastName: user.apellido || '',
+                        email: user.correo || userEmail,
+                        universityId: user.idUniversidad || 'Not provided',
+                        phone: user.telefono || 'Not provided',
+                        role: user.rol || 'rider'
+                    };
+                    
+                    console.log('Profile loaded from backend:', userData);
+                }
+            } catch (error) {
+                console.log('Backend profile endpoint not available, using sessionStorage');
+            }
+            
+            // 🔹 OPCIÓN 2: Si no hay backend, usar sessionStorage
+            if (!userData) {
+                const userName = sessionStorage.getItem('userName');
+                const userRole = sessionStorage.getItem('userRole');
+                const universityId = sessionStorage.getItem('universityId');
+                const userPhone = sessionStorage.getItem('userPhone');
+                
+                // Extraer nombre y apellido
+                const nameParts = userName ? userName.split(' ') : ['', ''];
+                const firstName = nameParts[0] || 'User';
+                const lastName = nameParts.slice(1).join(' ') || '';
+
+                userData = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: userEmail || 'No email',
+                    universityId: universityId || 'Not provided',
+                    phone: userPhone || 'Not provided',
+                    role: userRole || 'rider'
+                };
+                
+                console.log('Profile loaded from sessionStorage:', userData);
+            }
 
             // Rellenar información personal
             document.getElementById('firstName').textContent = userData.firstName;
@@ -72,11 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
             riderBadge.classList.add('active');
             driverBadge.classList.remove('active');
 
-            console.log('Rider profile loaded:', userData);
+            console.log('Rider profile displayed:', userData);
             
         } catch (error) {
             console.error('Error loading profile:', error);
-            // Mostrar datos por defecto en caso de error
         }
     }
 
@@ -87,7 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Limpiar datos de sesión
             sessionStorage.clear();
             
-            // Opcional: mantener el email si "remember me" estaba activo
+            // Opcional: Limpiar también localStorage si quieres
+            // localStorage.removeItem('registrationData');
             // localStorage.removeItem('selectedRole');
             
             // Redirigir al login

@@ -45,36 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para cargar perfil del usuario
     async function loadUserProfile() {
         try {
-            // OPCIÓN 1: Cargar desde API (cuando esté conectado)
-            // const response = await fetch('http://localhost:3000/api/profile', {
-            //     headers: {
-            //         'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
-            //     }
-            // });
-            // const userData = await response.json();
-
-            // OPCIÓN 2: Datos simulados (mientras no hay backend)
+            // Obtener datos del sessionStorage (guardados en el login)
+            const userName = sessionStorage.getItem('userName');
             const userEmail = sessionStorage.getItem('userEmail');
-            const userRole = localStorage.getItem('selectedRole') || 'rider';
+            const userRole = sessionStorage.getItem('userRole');
             
-            // Intentar obtener datos del registro guardados
-            const registrationData = JSON.parse(localStorage.getItem('registrationData') || '{}');
-            
-            const userData = {
-                firstName: registrationData.firstName || 'Hugo',
-                lastName: registrationData.lastName || 'Ocallega',
-                email: userEmail || registrationData.email || 'hugo@gmail.com',
-                universityId: registrationData.universityId || '0000123456',
-                phone: registrationData.phone || '+57 3124785471',
-                role: userRole
-            };
+            // Extraer nombre y apellido
+            const nameParts = userName ? userName.split(' ') : ['', ''];
+            const firstName = nameParts[0] || 'User';
+            const lastName = nameParts.slice(1).join(' ') || '';
 
-            // Datos del vehículo (si es conductor)
-            const vehicleData = registrationData.vehicle || {
-                licensePlate: 'ABC123',
-                make: 'Toyota',
-                model: 'Corolla 2024',
-                capacity: '4'
+            // 🔹 Construir objeto de usuario con datos reales del backend
+            const userData = {
+                firstName: firstName,
+                lastName: lastName,
+                email: userEmail || 'No email',
+                universityId: 'Loading...', // 👈 Este vendrá del backend
+                phone: 'Loading...', // 👈 Este vendrá del backend
+                role: userRole
             };
 
             // Rellenar información personal
@@ -86,23 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('userName').textContent = userData.firstName;
             document.querySelector('.user-avatar').textContent = userData.firstName.charAt(0).toUpperCase();
 
-            // Mostrar rol activo
+            // 🔹 Mostrar rol activo
             const driverBadge = document.getElementById('driverBadge');
             const riderBadge = document.getElementById('riderBadge');
 
-            if (userData.role === 'driver') {
+            if (userData.role === 'driver' || userData.role === 'conductor') {
                 driverBadge.classList.add('active');
                 riderBadge.classList.remove('active');
                 
-                // Mostrar sección de vehículo y botón
-                vehicleSection.style.display = 'block';
-                vehicleInfoBtn.style.display = 'block';
+                // 🔹 Intentar cargar datos del vehículo desde el backend
+                await loadVehicleInfo();
                 
-                // Rellenar datos del vehículo
-                document.getElementById('licensePlate').textContent = vehicleData.licensePlate;
-                document.getElementById('make').textContent = vehicleData.make;
-                document.getElementById('model').textContent = vehicleData.model;
-                document.getElementById('capacity').textContent = vehicleData.capacity;
             } else {
                 riderBadge.classList.add('active');
                 driverBadge.classList.remove('active');
@@ -114,8 +96,74 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Error loading profile:', error);
-            // Mostrar datos por defecto en caso de error
         }
+    }
+
+    // 🔹 Función para cargar información del vehículo desde el backend
+    async function loadVehicleInfo() {
+        try {
+            const authToken = sessionStorage.getItem('authToken');
+            
+            // Llamar al endpoint de vehículos cuando esté disponible
+            const response = await fetch('http://localhost:5000/api/vehicles/my-vehicle', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const vehicleData = await response.json();
+                
+                // Si hay datos de vehículo, mostrar la sección
+                if (vehicleData && vehicleData.data) {
+                    const vehicle = vehicleData.data;
+                    
+                    // Rellenar datos del vehículo
+                    document.getElementById('licensePlate').textContent = vehicle.placa || 'N/A';
+                    document.getElementById('make').textContent = vehicle.marca || 'N/A';
+                    document.getElementById('model').textContent = vehicle.modelo || 'N/A';
+                    document.getElementById('capacity').textContent = vehicle.capacidad || 'N/A';
+                    
+                    // Mostrar sección de vehículo
+                    vehicleSection.style.display = 'block';
+                    vehicleInfoBtn.style.display = 'block';
+                    
+                    console.log('Vehicle info loaded:', vehicle);
+                } else {
+                    // No hay vehículo registrado
+                    console.log('No vehicle registered yet');
+                    showNoVehicleMessage();
+                }
+            } else if (response.status === 404) {
+                // Endpoint no existe aún o no hay vehículo registrado
+                console.log('Vehicle endpoint not available or no vehicle found');
+                showNoVehicleMessage();
+            } else {
+                throw new Error('Error loading vehicle info');
+            }
+            
+        } catch (error) {
+            console.error('Error loading vehicle:', error);
+            // Si no hay endpoint, mostrar mensaje
+            showNoVehicleMessage();
+        }
+    }
+
+    // 🔹 Mostrar mensaje cuando no hay vehículo
+    function showNoVehicleMessage() {
+        vehicleSection.style.display = 'none';
+        vehicleInfoBtn.style.display = 'none';
+        
+        // Opcional: mostrar mensaje al usuario
+        console.log('No vehicle information available');
+        
+        // Puedes agregar un mensaje en la UI si quieres
+        // const message = document.createElement('div');
+        // message.className = 'info-message';
+        // message.textContent = 'No vehicle registered. Please add your vehicle information.';
+        // document.querySelector('.action-buttons').before(message);
     }
 
     // Función para hacer logout

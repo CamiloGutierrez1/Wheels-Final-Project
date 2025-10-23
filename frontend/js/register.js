@@ -87,11 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // Validar email corporativo (debe contener .edu)
+        /* Validar email corporativo (debe contener .edu)
         if (!data.email.includes('.edu')) {
             showError('Please use your corporate university email');
             return false;
-        }
+        }*/
 
         // Validar ID universitario (solo números)
         if (!/^\d+$/.test(data.universityId)) {

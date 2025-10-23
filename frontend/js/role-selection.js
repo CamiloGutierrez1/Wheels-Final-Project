@@ -22,22 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedBtn = role === 'driver' ? driverBtn : riderBtn;
         selectedBtn.style.transform = 'scale(0.95)';
 
-        //Esperar animaión y redirigir
+        //Esperar animación y redirigir
         setTimeout(() => {
             selectedBtn.style.transform = 'scale(1)';
-            redirectToLogin (role);
-        },200);
-    }
-    // Reidirigir a login
-    function redirectToLogin(role) {
-        window.location.href = 'pages/shared/login.html';
+            redirectToLogin(role);
+        }, 200);
     }
     
-    //efecto hover
+    // Redirigir a login según el rol
+    function redirectToLogin(role) {
+        if (role === 'driver') {
+            window.location.href = 'pages/shared/login-driver.html';
+        } else {
+            window.location.href = 'pages/shared/login.html'; // login de rider
+        }
+    }
+    
+    //efecto hover - CORREGIDO (era "btn" en lugar de "button")
     const roleButtons = document.querySelectorAll('.role-btn');
     roleButtons.forEach(button => {
-        btn.addEventListener('mouseenter', () => {
-            btn.style.transition = 'all 0.3s ease';
+        button.addEventListener('mouseenter', () => {
+            button.style.transition = 'all 0.3s ease';
         });
     });
     
@@ -46,4 +51,3 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Previously selected role: ${savedRole}`);
     }
 });
-

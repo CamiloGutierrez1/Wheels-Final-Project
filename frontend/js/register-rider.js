@@ -8,9 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let selectedRole = 'rider'; // Fijo en rider
 
-    // Los botones son solo visuales, no tienen funcionalidad
-    // El botón Rider ya está en negro desde el HTML
-
     // Event listener para el formulario
     registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -38,11 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Guardar datos en localStorage
-        localStorage.setItem('registrationData', JSON.stringify(formData));
-        localStorage.setItem('selectedRole', selectedRole);
-
-        console.log('Rider registration data saved:', formData);
+        console.log('Starting rider registration...', formData);
 
         // Mostrar loading
         const submitBtn = registerForm.querySelector('.btn-next');
@@ -51,15 +44,34 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            // Simular registro (API)
-            await registerRider(formData);
+            // Registrar en el backend
+            const result = await registerRider(formData);
             
-            // Registro exitoso
-            sessionStorage.setItem('userEmail', formData.email);
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('userRole', 'rider');
+            // 🔹 IMPORTANTE: Guardar en sessionStorage (no localStorage)
+            const user = result.data.user;
+            const token = result.data.token;
 
-            console.log('✅ Registration successful. Redirecting to profile...');
+            sessionStorage.setItem('userEmail', user.correo);
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('authToken', token);
+            sessionStorage.setItem('userName', `${user.nombre} ${user.apellido}`);
+            sessionStorage.setItem('userRole', user.rol);
+            
+            // Guardar datos adicionales
+            if (user.idUniversidad) {
+                sessionStorage.setItem('universityId', user.idUniversidad);
+            }
+            if (user.telefono) {
+                sessionStorage.setItem('userPhone', user.telefono);
+            }
+
+            console.log('✅ Registration successful. Session data saved:', {
+                email: user.correo,
+                name: `${user.nombre} ${user.apellido}`,
+                role: user.rol,
+                universityId: user.idUniversidad,
+                phone: user.telefono
+            });
 
             // Redirigir a profile-view-rider
             setTimeout(() => {
@@ -89,12 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        /*// Validar email corporativo (debe contener .edu)
-        if (!data.email.includes('.edu')) {
-            showError('Please use your corporate university email');
-            return false;
-        }*/
-
         // Validar ID universitario (solo números)
         if (!/^\d+$/.test(data.universityId)) {
             showError('University ID must contain only numbers');
@@ -122,44 +128,36 @@ document.addEventListener('DOMContentLoaded', () => {
         return emailRegex.test(email);
     }
 
-    // Registrar usuario rider (API simulada)
     // Registrar usuario rider (API real)
-async function registerRider(data) {
-    try {
-        const response = await fetch('http://localhost:5000/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                nombre: data.firstName,
-                apellido: data.lastName,
-                idUniversidad: data.universityId,
-                correo: data.email,
-                password: data.password,
-                telefono: data.phone,
-                rol: 'pasajero', // o 'rider', según cómo lo manejes en tu backend
-            })
-        });
+    async function registerRider(data) {
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre: data.firstName,
+                    apellido: data.lastName,
+                    idUniversidad: data.universityId,
+                    correo: data.email,
+                    password: data.password,
+                    telefono: data.phone,
+                    rol: 'pasajero'
+                })
+            });
 
-        const result = await response.json();
-        console.log('Server response:', result);
+            const result = await response.json();
+            console.log('Server response:', result);
 
-        if (!response.ok || !result.success) {
-            throw new Error(result.message || 'Error al registrar el usuario');
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Error al registrar el usuario');
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error registering rider:', error);
+            throw error;
         }
-
-        // Guardar token o datos si todo salió bien
-        localStorage.setItem('authToken', result.data.token);
-        localStorage.setItem('userName', `${result.data.user.nombre} ${result.data.user.apellido}`);
-        localStorage.setItem('userRole', result.data.user.rol);
-        localStorage.setItem('userEmail', result.data.user.correo);
-
-        return result;
-    } catch (error) {
-        console.error('Error registering rider:', error);
-        throw error;
     }
-}
-
 
     // Mostrar mensaje de error
     function showError(message) {
