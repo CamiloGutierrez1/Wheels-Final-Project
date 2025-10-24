@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('registrationData');
 
             setTimeout(() => {
-                window.location.href = '../pages/shared/profile-view.html';
+                window.location.href = '/pages/shared/profile-view.html';
             }, 500);
 
         } catch (error) {
