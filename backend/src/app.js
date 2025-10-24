@@ -45,9 +45,14 @@ app.get('/', (req, res) => {
   });
 });
 
-// Rutas de autenticación - IMPORTANTE: Esta línea debe estar aquí
+
+// Rutas de autenticación
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
+
+// Rutas de vehículos
+const vehicleRoutes = require('./routes/vehicleRoutes');
+app.use('/api/vehicles', vehicleRoutes);
 
 // ===== MANEJO DE ERRORES =====
 // Ruta no encontrada (debe ir DESPUÉS de todas las rutas)

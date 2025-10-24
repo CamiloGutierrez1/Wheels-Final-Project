@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 
 // Configurar Cloudinary
 cloudinary.config({
@@ -7,26 +8,39 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+console.log('📸 Cloudinary configurado:');
+console.log('   Cloud Name:', process.env.CLOUDINARY_CLOUD_NAME || '❌ NO CONFIGURADO');
+console.log('   API Key:', process.env.CLOUDINARY_API_KEY ? '✅ Configurado' : '❌ NO CONFIGURADO');
+console.log('   API Secret:', process.env.CLOUDINARY_API_SECRET ? '✅ Configurado' : '❌ NO CONFIGURADO');
+
 /**
- * Subir imagen a Cloudinary
- * @param {String} filePath - Ruta del archivo temporal
+ * Subir imagen desde buffer (memoria)
+ * @param {Buffer} buffer - Buffer del archivo
  * @param {String} folder - Carpeta en Cloudinary
  * @returns {Promise} - Resultado de la subida
  */
-const uploadImage = async (filePath, folder = 'wheels') => {
-  try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: folder,
-      resource_type: 'auto',
-      transformation: [
-        { width: 1000, height: 1000, crop: 'limit' }, // Limitar tamaño
-        { quality: 'auto' } // Optimización automática
-      ]
-    });
-    return result;
-  } catch (error) {
-    throw new Error(`Error al subir imagen: ${error.message}`);
-  }
+const uploadImage = (buffer, folder = 'wheels') => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: folder,
+        resource_type: 'auto',
+        transformation: [
+          { width: 1000, height: 1000, crop: 'limit' },
+          { quality: 'auto' }
+        ]
+      },
+      (error, result) => {
+        if (error) {
+          reject(new Error(`Error al subir imagen: ${error.message}`));
+        } else {
+          resolve(result);
+        }
+      }
+    );
+
+    streamifier.createReadStream(buffer).pipe(uploadStream);
+  });
 };
 
 /**
