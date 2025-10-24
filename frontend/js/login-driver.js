@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loginUser(email, password) {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch('https://wheels-final-project.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ correo: email, password }) // 👈 backend usa "correo"

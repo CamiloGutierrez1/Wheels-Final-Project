@@ -104,7 +104,7 @@ async function loadVehicleInfo() {
     try {
         const authToken = sessionStorage.getItem('authToken');
         
-        const response = await fetch('http://localhost:5000/api/vehicles/my-vehicle', {
+        const response = await fetch('https://wheels-final-project.onrender.com/api/vehicles/my-vehicle', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authToken}`,
