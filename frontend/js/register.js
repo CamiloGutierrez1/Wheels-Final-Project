@@ -1,167 +1,140 @@
 // register.js
 
-document.addEventListener('DOMContentLoaded', () => {
-    const registerForm = document.getElementById('registerForm');
-    const driverToggle = document.getElementById('driverToggle');
-    const riderToggle = document.getElementById('riderToggle');
-    const errorMessage = document.getElementById('errorMessage');
-    
-    let selectedRole = 'driver'; // Por defecto Driver (solo visual)
+document.addEventListener("DOMContentLoaded", () => {
+  const registerForm = document.getElementById("registerForm");
+  const errorMessage = document.getElementById("errorMessage");
 
-    // Ya no hay event listeners para los toggles
-    // Los botones son solo visuales, el active está en el HTML
+  let selectedRole = "driver"; // Por defecto
 
-    // Event listener para el formulario
-    registerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        handleRegister();
-    });
+  registerForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    handleRegister();
+  });
 
-    // Función principal para manejar el registro
-    async function handleRegister() {
-        // Obtener valores del formulario
-        const formData = {
-            firstName: document.getElementById('firstName').value.trim(),
-            lastName: document.getElementById('lastName').value.trim(),
-            universityId: document.getElementById('universityId').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            password: document.getElementById('password').value.trim(),
-            role: selectedRole
-        };
+  async function handleRegister() {
+    const formData = {
+        nombre: document.getElementById("firstName").value.trim(),
+        apellido: document.getElementById("lastName").value.trim(),
+        idUniversidad: document.getElementById("universityId").value.trim(),
+        correo: document.getElementById("email").value.trim(),
+        telefono: document.getElementById("phone").value.trim(),
+        password: document.getElementById("password").value.trim(), // ✅ cambia a "password"
+        rol: selectedRole === "driver" ? "conductor" : "pasajero",
+    };
 
-        // Limpiar error previo
-        hideError();
 
-        // Validaciones
-        if (!validateForm(formData)) {
-            return;
+    hideError();
+
+    if (!validateForm(formData)) return;
+
+    const submitBtn = registerForm.querySelector(".btn-next");
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Processing...";
+    submitBtn.disabled = true;
+
+    try {
+      // 🔥 Enviar datos reales al backend
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      console.log("Respuesta del backend:", data);
+
+      if (!data.success) {
+        showError(data.message || "Error en el registro");
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // ✅ Guarda el token y los datos del usuario real
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
+        localStorage.setItem("userRole", data.data.user.rol); // 👈 Guardamos rol real
+        localStorage.setItem("userEmail", data.data.user.correo);
+
+// Si es conductor, guarda los datos de registro para el siguiente paso
+        if (data.data.user.rol === "conductor") {
+            localStorage.setItem(
+                "registrationData",
+            JSON.stringify({
+                firstName: data.data.user.nombre,
+                lastName: data.data.user.apellido,
+                universityId: data.data.user.idUniversidad,
+                email: data.data.user.correo,
+                phone: data.data.user.telefono,
+                role: "driver"
+            })
+        );
+
+        window.location.href = "register-vehicle.html";
+        } else {
+        window.location.href = "../rider/dashboard.html";
         }
 
-        // Guardar datos temporalmente en localStorage
-        localStorage.setItem('registrationData', JSON.stringify(formData));
-        localStorage.setItem('selectedRole', selectedRole);
+    } catch (err) {
+      console.error(err);
+      showError("Error al conectar con el servidor");
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  }
 
-        // Mostrar loading
-        const submitBtn = registerForm.querySelector('.btn-next');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Processing...';
-        submitBtn.disabled = true;
-
-        try {
-            // Si es Driver, ir a página de vehículo
-            if (selectedRole === 'driver') {
-                setTimeout(() => {
-                    window.location.href = 'register-vehicle.html';
-                }, 500);
-            } else {
-                // Si es Rider, registrar directamente
-                await registerUser(formData);
-                
-                // Registro exitoso
-                sessionStorage.setItem('userEmail', formData.email);
-                sessionStorage.setItem('isLoggedIn', 'true');
-                
-                // Redirigir al dashboard de rider
-                window.location.href = '../rider/dashboard.html';
-            }
-        } catch (error) {
-            showError(error.message || 'Registration failed. Please try again.');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        }
+  // ✅ Validaciones de formulario
+  function validateForm(data) {
+    if (
+      !data.nombre ||
+      !data.apellido ||
+      !data.idUniversidad ||
+      !data.correo ||
+      !data.telefono ||
+      !data.password
+    ) {
+      showError("Please fill in all fields");
+      return false;
     }
 
-    // Validar formulario
-    function validateForm(data) {
-        // Validar campos vacíos
-        if (!data.firstName || !data.lastName || !data.universityId || 
-            !data.email || !data.phone || !data.password) {
-            showError('Please fill in all fields');
-            return false;
-        }
-
-        // Validar email
-        if (!isValidEmail(data.email)) {
-            showError('Please enter a valid email address');
-            return false;
-        }
-
-        /* Validar email corporativo (debe contener .edu)
-        if (!data.email.includes('.edu')) {
-            showError('Please use your corporate university email');
-            return false;
-        }*/
-
-        // Validar ID universitario (solo números)
-        if (!/^\d+$/.test(data.universityId)) {
-            showError('University ID must contain only numbers');
-            return false;
-        }
-
-        // Validar teléfono (formato básico)
-        if (data.phone.length < 10) {
-            showError('Please enter a valid phone number');
-            return false;
-        }
-
-        // Validar contraseña
-        if (data.password.length < 6) {
-            showError('Password must be at least 6 characters');
-            return false;
-        }
-
-        return true;
+    if (!isValidEmail(data.correo)) {
+      showError("Please enter a valid email");
+      return false;
     }
 
-    // Validar formato de email
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    if (!/^\d+$/.test(data.idUniversidad)) {
+      showError("University ID must contain only numbers");
+      return false;
     }
 
-    // Registrar usuario (API simulada)
-    async function registerUser(data) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // TODO: Reemplazar con llamada real a API
-                /*
-                const response = await fetch('http://localhost:3000/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                return result;
-                */
-
-                console.log('Registering user:', data);
-                resolve({ success: true });
-            }, 1000);
-        });
+    if (data.telefono.length < 10) {
+      showError("Phone number must have 10 digits");
+      return false;
     }
 
-    // Mostrar mensaje de error
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
-        
-        setTimeout(() => {
-            hideError();
-        }, 5000);
+    if (data.password.length < 6) {
+      showError("Password must be at least 6 characters");
+      return false;
     }
 
-    // Ocultar mensaje de error
-    function hideError() {
-        errorMessage.style.display = 'none';
-        errorMessage.textContent = '';
-    }
+    return true;
+  }
 
-    // Limpiar errores al escribir
-    const inputs = document.querySelectorAll('.input-field');
-    inputs.forEach(input => {
-        input.addEventListener('input', hideError);
-    });
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
-    console.log('Register page loaded');
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = "block";
+  }
+
+  function hideError() {
+    errorMessage.style.display = "none";
+    errorMessage.textContent = "";
+  }
+
+  console.log("Register page loaded");
 });

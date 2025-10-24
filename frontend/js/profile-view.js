@@ -100,56 +100,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 🔹 Función para cargar información del vehículo desde el backend
-    async function loadVehicleInfo() {
-        try {
-            const authToken = sessionStorage.getItem('authToken');
-            
-            // Llamar al endpoint de vehículos cuando esté disponible
-            const response = await fetch('http://localhost:5000/api/vehicles/my-vehicle', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const vehicleData = await response.json();
-                
-                // Si hay datos de vehículo, mostrar la sección
-                if (vehicleData && vehicleData.data) {
-                    const vehicle = vehicleData.data;
-                    
-                    // Rellenar datos del vehículo
-                    document.getElementById('licensePlate').textContent = vehicle.placa || 'N/A';
-                    document.getElementById('make').textContent = vehicle.marca || 'N/A';
-                    document.getElementById('model').textContent = vehicle.modelo || 'N/A';
-                    document.getElementById('capacity').textContent = vehicle.capacidad || 'N/A';
-                    
-                    // Mostrar sección de vehículo
-                    vehicleSection.style.display = 'block';
-                    vehicleInfoBtn.style.display = 'block';
-                    
-                    console.log('Vehicle info loaded:', vehicle);
-                } else {
-                    // No hay vehículo registrado
-                    console.log('No vehicle registered yet');
-                    showNoVehicleMessage();
-                }
-            } else if (response.status === 404) {
-                // Endpoint no existe aún o no hay vehículo registrado
-                console.log('Vehicle endpoint not available or no vehicle found');
-                showNoVehicleMessage();
-            } else {
-                throw new Error('Error loading vehicle info');
+async function loadVehicleInfo() {
+    try {
+        const authToken = sessionStorage.getItem('authToken');
+        
+        const response = await fetch('http://localhost:5000/api/vehicles/my-vehicle', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             }
-            
-        } catch (error) {
-            console.error('Error loading vehicle:', error);
-            // Si no hay endpoint, mostrar mensaje
+        });
+
+        if (response.ok) {
+            const vehicleData = await response.json();
+
+            // ✅ Aquí corregimos: acceder a data.vehiculo
+            if (vehicleData && vehicleData.data && vehicleData.data.vehiculo) {
+                const vehicle = vehicleData.data.vehiculo;
+
+                // Rellenar datos del vehículo
+                document.getElementById('licensePlate').textContent = vehicle.placa || 'N/A';
+                document.getElementById('make').textContent = vehicle.marca || 'N/A';
+                document.getElementById('model').textContent = vehicle.modelo || 'N/A';
+                document.getElementById('capacity').textContent = vehicle.capacidad || 'N/A';
+
+                // Si hay imágenes disponibles
+                if (vehicle.fotoVehiculo) {
+                    const vehicleImg = document.getElementById('vehiclePhoto');
+                    if (vehicleImg) vehicleImg.src = vehicle.fotoVehiculo;
+                }
+                if (vehicle.fotoSOAT) {
+                    const soatImg = document.getElementById('soatPhoto');
+                    if (soatImg) soatImg.src = vehicle.fotoSOAT;
+                }
+
+                // Mostrar sección del vehículo
+                vehicleSection.style.display = 'block';
+                vehicleInfoBtn.style.display = 'block';
+
+                console.log('✅ Vehicle info loaded:', vehicle);
+            } else {
+                console.log('⚠️ No vehicle registered yet');
+                showNoVehicleMessage();
+            }
+        } else if (response.status === 404) {
+            console.log('🚫 No vehicle found');
             showNoVehicleMessage();
+        } else {
+            throw new Error('Error loading vehicle info');
         }
+        
+    } catch (error) {
+        console.error('❌ Error loading vehicle:', error);
+        showNoVehicleMessage();
     }
+}
+
 
     // 🔹 Mostrar mensaje cuando no hay vehículo
     function showNoVehicleMessage() {
