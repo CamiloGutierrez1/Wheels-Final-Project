@@ -184,7 +184,7 @@ async function loadVehicleInfo() {
             // localStorage.removeItem('selectedRole');
             
             // Redirigir al login
-            window.location.href = 'login.html';
+            window.location.href = 'login-driver.html';
             
             console.log('User logged out');
         }

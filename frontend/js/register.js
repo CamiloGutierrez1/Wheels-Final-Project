@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         window.location.href = "register-vehicle.html";
         } else {
-        window.location.href = "../rider/dashboard.html";
+        window.location.href = "/Wheels-Final-Project/frontend/pages/shared/profile-view.html";
         }
 
     } catch (err) {

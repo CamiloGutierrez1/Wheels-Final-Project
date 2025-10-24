@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('registrationData');
 
             setTimeout(() => {
-                window.location.href = '../driver/dashboard.html';
+                window.location.href = '/Wheels-Final-Project/frontend/pages/shared/profile-view.html';
             }, 500);
 
         } catch (error) {
