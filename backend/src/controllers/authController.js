@@ -194,10 +194,41 @@ const obtenerPerfil = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Verificar si el usuario tiene vehículo registrado
+ * @route   GET /api/auth/check-driver-status
+ * @access  Private
+ */
+const verificarEstadoConductor = async (req, res) => {
+  try {
+    const Vehicle = require('../models/Vehicle');
+    
+    // Verificar si tiene vehículo
+    const vehiculo = await Vehicle.findOne({ conductorId: req.user._id });
+    
+    res.status(200).json({
+      success: true,
+      data: {
+        esConductor: req.user.rol === 'conductor' || req.user.rol === 'ambos',
+        tieneVehiculo: !!vehiculo,
+        conductorRegistrado: req.user.conductorRegistrado
+      }
+    });
+  } catch (error) {
+    console.error('Error verificando estado conductor:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al verificar estado',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   registrarUsuario,
   iniciarSesion,
   cerrarSesion,
   cerrarTodasSesiones,
-  obtenerPerfil
+  obtenerPerfil,
+  verificarEstadoConductor
 };

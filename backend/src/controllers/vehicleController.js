@@ -51,6 +51,13 @@ const registrarVehiculo = async (req, res) => {
       vehiculo.fotoSOAT = fotoSOATResult.secure_url;
       await vehiculo.save();
 
+      const usuario = await User.findById(conductorId);
+      if (usuario.rol === 'pasajero') {
+      usuario.rol = 'ambos';
+      usuario.conductorRegistrado = true;
+      await usuario.save();
+      }
+
       return res.status(200).json({
         success: true,
         message: 'Vehículo actualizado exitosamente',
@@ -69,6 +76,11 @@ const registrarVehiculo = async (req, res) => {
       });
 
       await vehiculo.save();
+
+      const usuario = await User.findById(conductorId);
+      usuario.rol = 'ambos';
+      usuario.conductorRegistrado = true;
+      await usuario.save();
 
       return res.status(201).json({
         success: true,

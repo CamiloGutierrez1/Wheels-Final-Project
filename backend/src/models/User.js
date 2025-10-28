@@ -49,6 +49,11 @@ const userSchema = new mongoose.Schema({
     enum: ['pasajero', 'conductor', 'ambos'],
     default: 'pasajero'
   },
+
+  conductorRegistrado: {
+  type: Boolean,
+  default: false
+},
   
   // Estado de la cuenta
   activo: {
