@@ -5,7 +5,8 @@ const {
   iniciarSesion,
   cerrarSesion,
   cerrarTodasSesiones,
-  obtenerPerfil
+  obtenerPerfil,
+  verificarEstadoConductor
 } = require('../controllers/authController');
 const { validarRegistro, validarLogin } = require('../validators/authValidator');
 const { protegerRuta } = require('../middlewares/authMiddleware');
@@ -46,5 +47,12 @@ router.post('/logout-all', protegerRuta, cerrarTodasSesiones);
  * @access  Private
  */
 router.get('/me', protegerRuta, obtenerPerfil);
+
+/**
+ * @route   GET /api/auth/check-driver-status
+ * @desc    Verificar estado de conductor del usuario
+ * @access  Private
+ */
+router.get('/check-driver-status', protegerRuta, verificarEstadoConductor);
 
 module.exports = router;
