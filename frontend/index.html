@@ -3,32 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wheels - Choose your role</title>
+    <title>Wheels - Welcome</title>
     <link rel="stylesheet" href="/css/role-selection.css">
-
 </head>
 <body>
     <div class="container">
-        <div class = "logo-section">
+        <div class="logo-section">
             <h1 class="logo">
-                Wheels <span class = "car-emoji">🚗</span>
+                Wheels <span class="car-emoji">🚗</span>
             </h1>
-            <p class = "tagline">Fast and Secure</p>
+            <p class="tagline">Fast and Secure</p>
         </div>
 
-        <div class = "role-selection">
-            <h2 class="title">Choose your role: </h2>
+        <div class="role-selection">
+            <h2 class="title">Bienvenido a Wheels</h2>
+            <p class="subtitle">Comparte viajes de forma segura en tu universidad</p>
             
-            <div class = "role-buttons">
-                <button class = "role-btn" id="driver-btn" data-role="driver">
-                    Driver
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="window.location.href='pages/register-rider.html'">
+                    Registrarse
                 </button>
-                <button class = "role-btn" id="rider-btn" data-role="rider">
-                    Rider
+                <button class="btn-secondary" onclick="window.location.href='pages/login.html'">
+                    Iniciar Sesión
                 </button>
             </div>
         </div>
     </div>
-    <script src="/js/role-selection.js"></script>
 </body>
 </html>

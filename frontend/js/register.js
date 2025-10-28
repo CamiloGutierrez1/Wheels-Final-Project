@@ -3,9 +3,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const registerForm = document.getElementById("registerForm");
   const errorMessage = document.getElementById("errorMessage");
-
-  let selectedRole = "driver"; // Por defecto
-
   registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     handleRegister();
@@ -19,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         correo: document.getElementById("email").value.trim(),
         telefono: document.getElementById("phone").value.trim(),
         password: document.getElementById("password").value.trim(), // ✅ cambia a "password"
-        rol: selectedRole === "driver" ? "conductor" : "pasajero",
+        rol: "pasajero",
     };
 
 
@@ -55,27 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("user", JSON.stringify(data.data.user));
         localStorage.setItem("userRole", data.data.user.rol); // 👈 Guardamos rol real
         localStorage.setItem("userEmail", data.data.user.correo);
-
-// Si es conductor, guarda los datos de registro para el siguiente paso
-        if (data.data.user.rol === "conductor") {
-            localStorage.setItem(
-                "registrationData",
-            JSON.stringify({
-                firstName: data.data.user.nombre,
-                lastName: data.data.user.apellido,
-                universityId: data.data.user.idUniversidad,
-                email: data.data.user.correo,
-                phone: data.data.user.telefono,
-                role: "driver"
-            })
-        );
-
-        window.location.href = "register-vehicle.html";
-        } else {
         window.location.href = "../pages/shared/profile-view.html";
-        }
-
-    } catch (err) {
+    
+      } catch (err) {
       console.error(err);
       showError("Error al conectar con el servidor");
     } finally {

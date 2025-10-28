@@ -5,12 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const vehicleInfoBtn = document.getElementById('vehicleInfoBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const vehicleSection = document.getElementById('vehicleSection');
+    const becomeDriverBtn = document.getElementById('becomeDriverBtn');
+    const driverUpgradeSection = document.getElementById('driverUpgradeSection');
 
     // Verificar si el usuario está autenticado
     checkAuthentication();
 
     // Cargar datos del usuario
     loadUserProfile();
+
+    if(becomeDriverBtn){
+        becomeDriverBtn.addEventListener('click', handleBecomeDriver);
+    }
 
     // Event listeners
     editProfileBtn.addEventListener('click', () => {
@@ -42,63 +48,110 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para cargar perfil del usuario
     async function loadUserProfile() {
-        try {
-            // Obtener datos del sessionStorage (guardados en el login)
-            const userName = sessionStorage.getItem('userName');
-            const userEmail = sessionStorage.getItem('userEmail');
-            const userRole = sessionStorage.getItem('userRole');
-            
-            // Extraer nombre y apellido
-            const nameParts = userName ? userName.split(' ') : ['', ''];
-            const firstName = nameParts[0] || 'User';
-            const lastName = nameParts.slice(1).join(' ') || '';
-
-            // 🔹 Construir objeto de usuario con datos reales del backend
-            const userData = {
-                firstName: firstName,
-                lastName: lastName,
-                email: userEmail || 'No email',
-                universityId: 'Loading...', // 👈 Este vendrá del backend
-                phone: 'Loading...', // 👈 Este vendrá del backend
-                role: userRole
-            };
-
-            // Rellenar información personal
-            document.getElementById('firstName').textContent = userData.firstName;
-            document.getElementById('lastName').textContent = userData.lastName;
-            document.getElementById('email').textContent = userData.email;
-            document.getElementById('universityId').textContent = userData.universityId;
-            document.getElementById('phone').textContent = userData.phone;
-            document.getElementById('userName').textContent = userData.firstName;
-            document.querySelector('.user-avatar').textContent = userData.firstName.charAt(0).toUpperCase();
-
-            // 🔹 Mostrar rol activo
-            const driverBadge = document.getElementById('driverBadge');
-            const riderBadge = document.getElementById('riderBadge');
-
-            if (userData.role === 'driver' || userData.role === 'conductor') {
-                driverBadge.classList.add('active');
-                riderBadge.classList.remove('active');
-                
-                // 🔹 Intentar cargar datos del vehículo desde el backend
-                await loadVehicleInfo();
-                
-            } else {
-                riderBadge.classList.add('active');
-                driverBadge.classList.remove('active');
-                vehicleSection.style.display = 'none';
-                vehicleInfoBtn.style.display = 'none';
+    try {
+        const authToken = sessionStorage.getItem('authToken');
+        
+        // ✅ Llamar al backend para obtener perfil completo
+        const response = await fetch('https://wheels-final-project.onrender.com/api/auth/me', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             }
+        });
 
-            console.log('User profile loaded:', userData);
-            
-        } catch (error) {
-            console.error('Error loading profile:', error);
+        if (!response.ok) {
+            throw new Error('Error loading profile');
         }
-    }
 
+        const profileData = await response.json();
+        const user = profileData.data.user;
+
+        // Rellenar información personal
+        document.getElementById('firstName').textContent = user.nombre;
+        document.getElementById('lastName').textContent = user.apellido;
+        document.getElementById('email').textContent = user.correo;
+        document.getElementById('universityId').textContent = user.idUniversidad;
+        document.getElementById('phone').textContent = user.telefono;
+        document.getElementById('userName').textContent = user.nombre;
+        document.querySelector('.user-avatar').textContent = user.nombre.charAt(0).toUpperCase();
+
+        // ✅ Manejar roles y mostrar botón de conductor
+        const driverBadge = document.getElementById('driverBadge');
+        const riderBadge = document.getElementById('riderBadge');
+
+        if (user.rol === 'conductor' || user.rol === 'ambos') {
+            driverBadge.classList.add('active');
+            riderBadge.classList.remove('active');
+            
+            // Si es conductor, cargar vehículo
+            await loadVehicleInfo();
+            
+            // Ocultar botón de upgrade
+            if (driverUpgradeSection) {
+                driverUpgradeSection.style.display = 'none';
+            }
+            
+        } else if (user.rol === 'pasajero') {
+            riderBadge.classList.add('active');
+            driverBadge.classList.remove('active');
+            vehicleSection.style.display = 'none';
+            vehicleInfoBtn.style.display = 'none';
+            
+            // ✅ MOSTRAR BOTÓN PARA CONVERTIRSE EN CONDUCTOR
+            if (driverUpgradeSection) {
+                driverUpgradeSection.style.display = 'block';
+            }
+        }
+
+        console.log('User profile loaded:', user);
+        
+    } catch (error) {
+        console.error('Error loading profile:', error);
+        alert('Error loading profile. Please login again.');
+        handleLogout();
+    }
+    
+}
+// Funcion : MANEJAR CONVERTIRSE EN CONDUCTOR
+// ✅ NUEVA FUNCIÓN: Manejar conversión a conductor
+async function handleBecomeDriver() {
+    const authToken = sessionStorage.getItem('authToken');
+    
+    try {
+        // Mostrar loading
+        const btn = document.getElementById('becomeDriverBtn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Verificando...';
+        btn.disabled = true;
+        
+        // Verificar estado actual
+        const statusResponse = await fetch('https://wheels-final-project.onrender.com/api/auth/check-driver-status', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const statusData = await statusResponse.json();
+
+        if (statusData.success && statusData.data.tieneVehiculo) {
+            // Ya tiene vehículo, solo actualizar vista
+            alert('Ya tienes un vehículo registrado');
+            location.reload();
+        } else {
+            // Redirigir a registro de vehículo
+            window.location.href = 'register-vehicle.html';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        // Si falla la verificación, igual redirigir a registro
+        window.location.href = 'register-vehicle.html';
+    }
+}
     // 🔹 Función para cargar información del vehículo desde el backend
 async function loadVehicleInfo() {
     try {

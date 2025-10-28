@@ -61,10 +61,58 @@ body {
     font-size: 2.5rem;
     color: #FFFFFF;
     font-weight: 600;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     letter-spacing: 1px;
 }
 
+/* ✅ NUEVO: Subtítulo */
+.subtitle {
+    font-size: 1.1rem;
+    color: #FFFFFF;
+    font-weight: 300;
+    margin-bottom: 50px;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+/* ✅ ACTUALIZADO: Mantiene el mismo diseño que role-buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* ✅ ACTUALIZADO: Mismo estilo que los botones originales */
+.btn-primary,
+.btn-secondary {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: none;
+    padding: 15px 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    min-width: 150px;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ MANTENIDO: Botones originales (por si se usan en otro lado) */
 .role-buttons {
     display: flex;
     justify-content: center;
@@ -102,21 +150,28 @@ body {
     .logo {
         font-size: 2.5rem;
     }
-
+    
     .car-emoji {
         font-size: 2rem;
     }
-
+    
     .title {
         font-size: 2rem;
     }
-
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
     .role-btn {
         padding: 12px 40px;
         font-size: 1rem;
         min-width: 130px;
     }
-
+    
+    .action-buttons,
     .role-buttons {
         gap: 25px;
     }
@@ -126,29 +181,37 @@ body {
     .container {
         padding: 20px;
     }
-
+    
     .logo {
         font-size: 2rem;
     }
-
+    
     .car-emoji {
         font-size: 1.8rem;
     }
-
+    
     .tagline {
         font-size: 0.9rem;
     }
-
+    
     .title {
         font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
         margin-bottom: 30px;
     }
-
+    
+    .action-buttons,
     .role-buttons {
         flex-direction: column;
         gap: 20px;
     }
-
+    
+    .btn-primary,
+    .btn-secondary,
     .role-btn {
         width: 100%;
         max-width: 250px;

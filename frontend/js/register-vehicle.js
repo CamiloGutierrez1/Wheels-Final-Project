@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!token) throw new Error('Usuario no autenticado');
 
             const response = await fetch('https://wheels-final-project.onrender.com/api/vehicles', {
-                     method: 'POST',
+                    method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
