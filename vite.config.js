@@ -15,6 +15,9 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'frontend/index.html'),
+                login: resolve(__dirname, 'frontend/pages/shared/login.html'),
+                'register-rider': resolve(__dirname, 'frontend/pages/shared/register-rider.html'),
+                'register-vehicle': resolve(__dirname, 'frontend/pages/shared/register-vehicle.html'),
                 dashboard: resolve(__dirname, 'frontend/pages/shared/dashboard.html')
             }
         }
