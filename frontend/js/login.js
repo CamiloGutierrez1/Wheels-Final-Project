@@ -1,6 +1,9 @@
 // login.js
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Verificar si ya hay usuario autenticado
+    checkIfAlreadyLoggedIn();
+    
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -71,6 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('authToken', token);
                 sessionStorage.setItem('userName', `${user.nombre} ${user.apellido}`);
                 sessionStorage.setItem('userRole', user.rol);
+                
+                // También guardar en localStorage para que React lo pueda leer
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('userRole', user.rol);
+                localStorage.setItem('userName', `${user.nombre} ${user.apellido}`);
 
                 // Redirigir según rol
                 redirectToDashboard(user.rol);
@@ -125,6 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMessage.textContent = '';
     }
 
+    // Verificar si ya hay usuario autenticado
+    function checkIfAlreadyLoggedIn() {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
+        if (token) {
+            const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole') || 'pasajero';
+            // Redirigir al dashboard correspondiente
+            if (userRole === 'conductor' || userRole === 'driver') {
+                window.location.href = 'dashboard.html#/dashboard/driver';
+            } else {
+                window.location.href = 'dashboard.html#/dashboard/rider';
+            }
+        }
+    }
+
     // Cargar email recordado del localStorage
     function loadRememberedEmail() {
         const rememberedEmail = localStorage.getItem('rememberedEmail');
@@ -136,17 +159,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Redirigir al dashboard según el rol
     function redirectToDashboard(role) {
-    console.log(`Redirecting temporarily after login for role: ${role}`);
+    console.log(`Redirecting to dashboard for role: ${role}`);
 
     if (role === 'driver' || role === 'conductor') {
-        // 🔹 Redirige a cualquier página existente de driver
-        window.location.href = 'profile-view-rider.html';
+        // Redirige al dashboard de conductor en React
+        window.location.href = 'dashboard.html#/dashboard/driver';
     } else if (role === 'rider' || role === 'pasajero') {
-        // 🔹 Redirige a una página existente de rider
-        window.location.href = 'profile-view-rider.html';
+        // Redirige al dashboard de pasajero en React
+        window.location.href = 'dashboard.html#/dashboard/rider';
     } else {
-        // 🔹 Si el rol no coincide, redirige a algo neutro
-        window.location.href = 'profile-view-rider.html';
+        // Si el rol no coincide, redirige al dashboard de pasajero por defecto
+        window.location.href = 'dashboard.html#/dashboard/rider';
     }
 }
 

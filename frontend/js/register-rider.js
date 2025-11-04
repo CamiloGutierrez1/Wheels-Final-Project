@@ -73,9 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 phone: user.telefono
             });
 
-            // Redirigir a profile-view-rider
+            // También guardar en localStorage para que React lo pueda leer
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('userRole', user.rol);
+            localStorage.setItem('userName', `${user.nombre} ${user.apellido}`);
+            
+            // Redirigir al dashboard de React para pasajeros
             setTimeout(() => {
-                window.location.href = 'profile-view-rider.html';
+                window.location.href = 'dashboard.html#/dashboard/rider';
             }, 500);
 
         } catch (error) {

@@ -90,14 +90,20 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await registerDriver(completeData, vehicleData.vehiclePhoto, vehicleData.soatPhoto);
 
+            // Actualizar datos de sesión
             sessionStorage.setItem('userEmail', registrationData.email);
             sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('userRole', 'driver');
+            
+            // El rol ya fue actualizado en registerDriver, usar el que está en localStorage
+            const token = localStorage.getItem('token');
+            const userRole = localStorage.getItem('userRole') || 'conductor';
+            sessionStorage.setItem('userRole', userRole);
 
             localStorage.removeItem('registrationData');
 
+            // Redirigir al dashboard de conductor en React
             setTimeout(() => {
-                window.location.href = '/pages/shared/profile-view.html';
+                window.location.href = 'dashboard.html#/dashboard/driver';
             }, 500);
 
         } catch (error) {
@@ -138,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!token) throw new Error('Usuario no autenticado');
 
             const response = await fetch('https://wheels-final-project.onrender.com/api/vehicles', {
-                     method: 'POST',
+                    method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -150,6 +156,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(result.message || 'Error al registrar vehículo');
 
             console.log('✅ Vehículo registrado exitosamente:', result);
+            
+            // Obtener el usuario actualizado del backend para actualizar el rol
+            try {
+                const userResponse = await fetch('https://wheels-final-project.onrender.com/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    if (userData.success && userData.data.user) {
+                        const updatedUser = userData.data.user;
+                        // Actualizar rol en localStorage y sessionStorage
+                        localStorage.setItem('userRole', updatedUser.rol);
+                        sessionStorage.setItem('userRole', updatedUser.rol);
+                        console.log('✅ Rol actualizado:', updatedUser.rol);
+                    }
+                }
+            } catch (err) {
+                console.warn('No se pudo actualizar el rol del usuario:', err);
+                // Si falla, asumimos que es conductor
+                localStorage.setItem('userRole', 'conductor');
+                sessionStorage.setItem('userRole', 'conductor');
+            }
+            
             return result;
         } catch (error) {
             console.error('❌ Error al registrar vehículo:', error);
