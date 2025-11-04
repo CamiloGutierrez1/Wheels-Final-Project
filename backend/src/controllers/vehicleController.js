@@ -5,20 +5,12 @@ const { uploadImage, deleteImage } = require('../config/cloudinary');
 /**
  * @desc    Registrar o actualizar vehículo del conductor
  * @route   POST /api/vehicles
- * @access  Private (solo conductores)
+ * @access  Private (cualquier usuario autenticado)
  */
 const registrarVehiculo = async (req, res) => {
   try {
     const { placa, marca, modelo, capacidad } = req.body;
     const conductorId = req.user._id;
-
-    // Verificar que el usuario sea conductor
-    if (req.user.rol !== 'conductor' && req.user.rol !== 'ambos') {
-      return res.status(403).json({
-        success: false,
-        message: 'Solo los conductores pueden registrar vehículos'
-      });
-    }
 
     // Verificar que se subieron las imágenes
     if (!req.files || !req.files.fotoVehiculo || !req.files.fotoSOAT) {
@@ -51,11 +43,11 @@ const registrarVehiculo = async (req, res) => {
       vehiculo.fotoSOAT = fotoSOATResult.secure_url;
       await vehiculo.save();
 
+      // Marcar al usuario como conductor registrado
       const usuario = await User.findById(conductorId);
-      if (usuario.rol === 'pasajero') {
-      usuario.rol = 'ambos';
-      usuario.conductorRegistrado = true;
-      await usuario.save();
+      if (!usuario.conductorRegistrado) {
+        usuario.conductorRegistrado = true;
+        await usuario.save();
       }
 
       return res.status(200).json({
@@ -77,8 +69,8 @@ const registrarVehiculo = async (req, res) => {
 
       await vehiculo.save();
 
+      // Marcar al usuario como conductor registrado
       const usuario = await User.findById(conductorId);
-      usuario.rol = 'ambos';
       usuario.conductorRegistrado = true;
       await usuario.save();
 
@@ -110,7 +102,7 @@ const registrarVehiculo = async (req, res) => {
 /**
  * @desc    Obtener vehículo del conductor autenticado
  * @route   GET /api/vehicles/my-vehicle
- * @access  Private (solo conductores)
+ * @access  Private (cualquier usuario autenticado)
  */
 const obtenerMiVehiculo = async (req, res) => {
   try {
@@ -172,7 +164,7 @@ const obtenerVehiculoPorConductor = async (req, res) => {
 /**
  * @desc    Eliminar vehículo
  * @route   DELETE /api/vehicles
- * @access  Private (solo conductores)
+ * @access  Private (cualquier usuario autenticado)
  */
 const eliminarVehiculo = async (req, res) => {
   try {
@@ -186,6 +178,11 @@ const eliminarVehiculo = async (req, res) => {
     }
 
     await vehiculo.deleteOne();
+
+    // Opcional: Actualizar estado de conductor registrado
+    const usuario = await User.findById(req.user._id);
+    usuario.conductorRegistrado = false;
+    await usuario.save();
 
     res.status(200).json({
       success: true,

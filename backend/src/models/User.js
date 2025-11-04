@@ -43,17 +43,17 @@ const userSchema = new mongoose.Schema({
     default: null
   },
   
-  // Rol del usuario
+  // Rol del usuario (simplificado - ya no se usa para restricciones)
   rol: {
     type: String,
-    enum: ['pasajero', 'conductor', 'ambos'],
-    default: 'pasajero'
+    default: 'usuario'
   },
 
+  // Indica si el usuario tiene un vehículo registrado
   conductorRegistrado: {
-  type: Boolean,
-  default: false
-},
+    type: Boolean,
+    default: false
+  },
   
   // Estado de la cuenta
   activo: {

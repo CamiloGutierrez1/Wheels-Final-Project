@@ -6,18 +6,17 @@ const {
   obtenerVehiculoPorConductor,
   eliminarVehiculo
 } = require('../controllers/vehicleController');
-const { protegerRuta, verificarRol } = require('../middlewares/authMiddleware');
+const { protegerRuta } = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/uploadMiddleware');
 
 /**
  * @route   POST /api/vehicles
  * @desc    Registrar o actualizar vehículo
- * @access  Private (solo conductores)
+ * @access  Private (cualquier usuario autenticado)
  */
 router.post(
   '/',
   protegerRuta,
-  verificarRol('conductor'),
   upload.fields([
     { name: 'fotoVehiculo', maxCount: 1 },
     { name: 'fotoSOAT', maxCount: 1 }
@@ -28,12 +27,11 @@ router.post(
 /**
  * @route   GET /api/vehicles/my-vehicle
  * @desc    Obtener mi vehículo
- * @access  Private (solo conductores)
+ * @access  Private (cualquier usuario autenticado)
  */
 router.get(
   '/my-vehicle',
   protegerRuta,
-  verificarRol('conductor'),
   obtenerMiVehiculo
 );
 
@@ -50,12 +48,11 @@ router.get(
 /**
  * @route   DELETE /api/vehicles
  * @desc    Eliminar mi vehículo
- * @access  Private (solo conductores)
+ * @access  Private (cualquier usuario autenticado)
  */
 router.delete(
   '/',
   protegerRuta,
-  verificarRol('conductor'),
   eliminarVehiculo
 );
 

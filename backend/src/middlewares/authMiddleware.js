@@ -57,9 +57,10 @@ const protegerRuta = async (req, res, next) => {
 };
 
 /**
- * Middleware para verificar roles específicos
- * @param  {...String} rolesPermitidos - Roles que pueden acceder
+ * [DESHABILITADO] Middleware para verificar roles específicos
+ * Ya no es necesario porque todos los usuarios pueden ser conductores y pasajeros
  */
+/*
 const verificarRol = (...rolesPermitidos) => {
   return (req, res, next) => {
     if (!req.user) {
@@ -82,8 +83,9 @@ const verificarRol = (...rolesPermitidos) => {
     next();
   };
 };
+*/
 
 module.exports = {
   protegerRuta,
-  verificarRol
+  // verificarRol // Comentado - ya no se exporta
 };
