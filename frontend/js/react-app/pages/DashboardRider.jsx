@@ -54,11 +54,15 @@ function DashboardRider() {
   // Cargar información del usuario
   const loadUserInfo = () => {
     const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Usuario';
-    const userRole = sessionStorage.getItem('userRole') || localStorage.getItem('userRole') || 'pasajero';
-    
+
+    // Obtener el objeto usuario completo del localStorage
+    const userDataString = localStorage.getItem('user');
+    const userData = userDataString ? JSON.parse(userDataString) : null;
+
     setUserInfo({
       name: userName,
-      role: userRole
+      role: userData?.rol || 'usuario',
+      conductorRegistrado: userData?.conductorRegistrado || false
     });
   };
 
@@ -157,7 +161,7 @@ function DashboardRider() {
           </div>
           <div className="user-info">
             <span className="user-name">{userInfo?.name || 'Usuario'}</span>
-            {userInfo?.role === 'pasajero' && (
+            {!userInfo?.conductorRegistrado && (
               <button className="btn-conductor" onClick={handleBecomeDriver}>
                 Convertirse en Conductor
               </button>

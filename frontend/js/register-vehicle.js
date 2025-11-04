@@ -156,30 +156,43 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(result.message || 'Error al registrar vehículo');
 
             console.log('✅ Vehículo registrado exitosamente:', result);
-            
-            // Obtener el usuario actualizado del backend para actualizar el rol
+
+            // Obtener el usuario actualizado del backend para actualizar conductorRegistrado
             try {
                 const userResponse = await fetch('https://wheels-final-project.onrender.com/api/auth/me', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                
+
                 if (userResponse.ok) {
                     const userData = await userResponse.json();
                     if (userData.success && userData.data.user) {
                         const updatedUser = userData.data.user;
-                        // Actualizar rol en localStorage y sessionStorage
+
+                        // Actualizar el objeto user completo en localStorage
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+
+                        // Actualizar también los campos individuales
                         localStorage.setItem('userRole', updatedUser.rol);
                         sessionStorage.setItem('userRole', updatedUser.rol);
-                        console.log('✅ Rol actualizado:', updatedUser.rol);
+
+                        console.log('✅ Usuario actualizado:', {
+                            rol: updatedUser.rol,
+                            conductorRegistrado: updatedUser.conductorRegistrado
+                        });
                     }
                 }
             } catch (err) {
-                console.warn('No se pudo actualizar el rol del usuario:', err);
-                // Si falla, asumimos que es conductor
-                localStorage.setItem('userRole', 'conductor');
-                sessionStorage.setItem('userRole', 'conductor');
+                console.warn('No se pudo actualizar el usuario:', err);
+
+                // Si falla, actualizar manualmente el objeto user en localStorage
+                const userString = localStorage.getItem('user');
+                if (userString) {
+                    const user = JSON.parse(userString);
+                    user.conductorRegistrado = true;
+                    localStorage.setItem('user', JSON.stringify(user));
+                }
             }
             
             return result;
