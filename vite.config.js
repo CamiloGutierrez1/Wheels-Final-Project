@@ -7,7 +7,7 @@ export default defineConfig({
     root: 'frontend',
     server: {
         port: 5501,
-        open: '/pages/shared/dashboard.html#/dashboard/rider'  // ← AGREGUÉ #/dashboard/rider
+        open: '/pages/shared/dashboard.html#/dashboard/rider'
     },
     build: {
         outDir: '../dist',
@@ -20,6 +20,7 @@ export default defineConfig({
                 'register-vehicle': resolve(__dirname, 'frontend/pages/shared/register-vehicle.html'),
                 dashboard: resolve(__dirname, 'frontend/pages/shared/dashboard.html')
             }
-        }
+        },
+        assetsInlineLimit: 0  // No inline assets, mantener archivos separados
     }
 });
