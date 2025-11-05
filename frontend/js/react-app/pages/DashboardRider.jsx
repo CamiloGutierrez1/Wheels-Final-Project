@@ -195,8 +195,8 @@ function DashboardRider() {
   // Ir al perfil
   const handleGoToProfile = () => {
     // Salir de React y navegar a la página HTML estática
-    // Desde dashboard.html en pages/shared/, profile-view-rider.html está en el mismo directorio
-    window.location.href = window.location.origin + '/pages/shared/profile-view-rider.html';
+    // Usar profile-view.html para ambos (rider y driver) ya que maneja ambos roles
+    window.location.href = window.location.origin + '/pages/shared/profile-view.html';
   };
 
   // Convertirse en conductor
