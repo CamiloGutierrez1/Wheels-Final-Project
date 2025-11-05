@@ -194,7 +194,8 @@ function DashboardRider() {
 
   // Ir al perfil
   const handleGoToProfile = () => {
-    window.location.href = 'profile-view-rider.html';
+    // Salir de React y navegar a la página HTML estática
+    window.location.href = '/pages/shared/profile-view-rider.html';
   };
 
   // Convertirse en conductor

@@ -208,7 +208,8 @@ function DashboardDriver() {
   };
 
   const handleGoToProfile = () => {
-    window.location.href = 'profile-view.html';
+    // Salir de React y navegar a la página HTML estática
+    window.location.href = '/pages/shared/profile-view.html';
   };
 
   const formatPrice = (price) => {
