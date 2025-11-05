@@ -163,13 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para guardar cambios del perfil
     async function handleSaveProfile() {
         // Obtener valores del formulario
+        const currentPassword = document.getElementById('currentPassword').value.trim();
+        const newPassword = document.getElementById('newPassword').value.trim();
+        const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
         const updatedData = {
             firstName: document.getElementById('firstName').value.trim(),
             lastName: document.getElementById('lastName').value.trim(),
             email: document.getElementById('email').value.trim(),
             universityId: document.getElementById('universityId').value.trim(),
             phone: document.getElementById('phone').value.trim(),
-            password: document.getElementById('password').value.trim(),
             role: selectedRole
         };
 
@@ -177,6 +180,41 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!updatedData.firstName || !updatedData.lastName || !updatedData.phone) {
             showError('Please fill in all required fields');
             return;
+        }
+
+        // Validar cambio de contraseña si se intentó
+        if (newPassword || confirmPassword || currentPassword) {
+            // Si se llena algún campo de contraseña, todos son requeridos
+            if (!currentPassword) {
+                showError('Current password is required to change password');
+                return;
+            }
+
+            if (!newPassword) {
+                showError('New password is required');
+                return;
+            }
+
+            if (!confirmPassword) {
+                showError('Please confirm your new password');
+                return;
+            }
+
+            // Verificar que las contraseñas coincidan
+            if (newPassword !== confirmPassword) {
+                showError('New passwords do not match');
+                return;
+            }
+
+            // Validar longitud de la nueva contraseña
+            if (newPassword.length < 6) {
+                showError('New password must be at least 6 characters long');
+                return;
+            }
+
+            // Agregar contraseñas a los datos a enviar
+            updatedData.currentPassword = currentPassword;
+            updatedData.newPassword = newPassword;
         }
 
         // Si es driver, incluir datos del vehículo
@@ -233,21 +271,63 @@ document.addEventListener('DOMContentLoaded', () => {
     async function saveProfileChanges(data) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                // TODO: Reemplazar con llamada real al API
+                // TODO: Implementar en el backend
                 /*
-                const response = await fetch('http://localhost:3000/api/profile', {
+                ENDPOINT: PUT /api/users/profile o PUT /api/auth/update-profile
+
+                Body esperado:
+                {
+                    nombre: data.firstName,
+                    apellido: data.lastName,
+                    telefono: data.phone,
+                    idUniversidad: data.universityId,
+                    // Para cambio de contraseña (opcional):
+                    currentPassword: data.currentPassword,  // Solo si se quiere cambiar contraseña
+                    newPassword: data.newPassword           // Solo si se quiere cambiar contraseña
+                }
+
+                Headers:
+                {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+
+                Respuesta esperada:
+                {
+                    success: true,
+                    message: 'Profile updated successfully',
+                    data: { user: {...} }
+                }
+
+                Ejemplo de implementación:
+                const response = await fetch('https://wheels-final-project.onrender.com/api/auth/update-profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        nombre: data.firstName,
+                        apellido: data.lastName,
+                        telefono: data.phone,
+                        idUniversidad: data.universityId,
+                        currentPassword: data.currentPassword,
+                        newPassword: data.newPassword
+                    })
                 });
+
+                if (!response.ok) {
+                    throw new Error('Error updating profile');
+                }
+
                 const result = await response.json();
                 return result;
                 */
 
-                console.log('Profile updated:', data);
+                console.log('📝 Datos que se enviarían al backend:', data);
+                if (data.currentPassword && data.newPassword) {
+                    console.log('🔐 Se incluye cambio de contraseña');
+                }
                 resolve({ success: true });
             }, 1000);
         });
@@ -289,6 +369,21 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
         });
+    });
+
+    // Validación en tiempo real para campos de contraseña
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    confirmPasswordInput.addEventListener('input', () => {
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (confirmPassword && newPassword !== confirmPassword) {
+            confirmPasswordInput.style.borderColor = '#ff3b3b';
+        } else {
+            confirmPasswordInput.style.borderColor = '';
+        }
     });
 
     console.log('Profile edit page loaded');
