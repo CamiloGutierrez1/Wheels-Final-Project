@@ -140,7 +140,7 @@ function DashboardDriver() {
         ...validRutaPoints.slice(1, -1), // Puntos intermedios (excluyendo origen y destino si están duplicados)
         formData.destino
       ];
-      
+
       // Si el primer punto de ruta es diferente al origen, usarlo
       if (validRutaPoints[0] && validRutaPoints[0] !== formData.origen) {
         rutaCompleta[0] = validRutaPoints[0];
@@ -149,7 +149,7 @@ function DashboardDriver() {
       const tripData = {
         origen: formData.origen,
         destino: formData.destino,
-        ruta: rutaCompleta,
+        ruta: rutaCompleta.join(', '), // Backend expects string, not array
         hora: formData.hora,
         asientosDisponibles: asientos,
         asientosTotales: asientos,
@@ -224,7 +224,11 @@ function DashboardDriver() {
     if (Array.isArray(ruta)) {
       return ruta.join(' → ');
     }
-    return ruta || 'N/A';
+    if (typeof ruta === 'string' && ruta.trim() !== '') {
+      // Convert comma-separated string to arrow-separated format
+      return ruta.split(',').map(p => p.trim()).join(' → ');
+    }
+    return 'N/A';
   };
 
   // Cargar reservas de un viaje específico
