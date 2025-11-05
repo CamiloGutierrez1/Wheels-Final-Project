@@ -69,8 +69,6 @@ function TripModal({ trip, onClose, onSuccess }) {
         body: JSON.stringify({
           numCupos: parseInt(numCupos),
           pickupPoints: pickupPoints.map(p => ({
-            cupo: p.cupo,
-            puntoIndex: parseInt(p.puntoIndex),
             puntoNombre: p.puntoNombre
           }))
         })

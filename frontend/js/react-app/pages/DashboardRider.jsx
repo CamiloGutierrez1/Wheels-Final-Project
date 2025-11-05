@@ -12,7 +12,10 @@ function DashboardRider() {
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-  
+  const [myBookings, setMyBookings] = useState([]);
+  const [showBookings, setShowBookings] = useState(false);
+  const [loadingBookings, setLoadingBookings] = useState(false);
+
   // Filtros
   const [filters, setFilters] = useState({
     origen: '',
@@ -180,6 +183,71 @@ function DashboardRider() {
     setShowModal(false);
     setSelectedTrip(null);
     loadTrips(); // Recargar viajes
+    loadMyBookings(); // Recargar mis reservas
+  };
+
+  // Cargar mis reservas
+  const loadMyBookings = async () => {
+    try {
+      setLoadingBookings(true);
+      const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
+
+      const response = await fetch(`${API_BASE_URL}/bookings/my-bookings`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMyBookings(data.data.bookings || []);
+      } else {
+        console.error('Error al cargar reservas:', data.message);
+        setMyBookings([]);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setMyBookings([]);
+    } finally {
+      setLoadingBookings(false);
+    }
+  };
+
+  // Cancelar una reserva
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
+
+      const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}/cancel`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        alert('Reserva cancelada exitosamente');
+        loadMyBookings(); // Recargar reservas
+        loadTrips(); // Recargar viajes para actualizar cupos disponibles
+      } else {
+        alert(data.message || 'Error al cancelar reserva');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Error al cancelar reserva');
+    }
+  };
+
+  // Formatear precio
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-CO').format(price);
   };
 
   // Cerrar sesión
@@ -313,6 +381,100 @@ function DashboardRider() {
                 />
               ))}
             </div>
+          )}
+        </section>
+
+        {/* Sección de Mis Reservas */}
+        <section className="trips-section" style={{ marginTop: '40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h2 className="section-title">Mis Reservas</h2>
+            <button
+              className="btn-search"
+              onClick={() => {
+                setShowBookings(!showBookings);
+                if (!showBookings && myBookings.length === 0) {
+                  loadMyBookings();
+                }
+              }}
+              style={{ padding: '10px 20px' }}
+            >
+              {showBookings ? 'Ocultar' : 'Mostrar'} Reservas
+            </button>
+          </div>
+
+          {showBookings && (
+            <>
+              {loadingBookings ? (
+                <div className="loading-state">
+                  <div className="spinner"></div>
+                  <p>Cargando reservas...</p>
+                </div>
+              ) : myBookings.length === 0 ? (
+                <div className="empty-state">
+                  <p>No tienes reservas aún</p>
+                </div>
+              ) : (
+                <div className="trips-container">
+                  {myBookings.map((booking) => (
+                    <div key={booking._id} className="trip-card">
+                      <span className={`status-badge ${
+                        booking.estado === 'confirmada' ? 'available' :
+                        booking.estado === 'pendiente' ? 'warning' :
+                        booking.estado === 'cancelada' ? 'full' : 'available'
+                      }`}>
+                        {booking.estado.toUpperCase()}
+                      </span>
+
+                      <div className="trip-details">
+                        <div className="detail-row">
+                          <span className="detail-label">Viaje:</span>
+                          <span className="detail-value">
+                            {booking.viaje?.origen} → {booking.viaje?.destino}
+                          </span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Conductor:</span>
+                          <span className="detail-value">
+                            {booking.viaje?.conductor?.nombre} {booking.viaje?.conductor?.apellido}
+                          </span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Teléfono conductor:</span>
+                          <span className="detail-value">{booking.viaje?.conductor?.telefono}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Hora de salida:</span>
+                          <span className="detail-value">{booking.viaje?.hora}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Cupos reservados:</span>
+                          <span className="detail-value">{booking.cuposReservados}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Punto de recogida:</span>
+                          <span className="detail-value">{booking.puntoRecogida}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Total pagado:</span>
+                          <span className="detail-value">${formatPrice(booking.precioTotal)}</span>
+                        </div>
+
+                        {/* Botón de cancelar solo si está pendiente o confirmada */}
+                        {(booking.estado === 'pendiente' || booking.estado === 'confirmada') && (
+                          <button
+                            className="btn-cancel"
+                            onClick={() => handleCancelBooking(booking._id)}
+                            style={{ marginTop: '10px', width: '100%', background: '#ff3b3b' }}
+                          >
+                            Cancelar Reserva
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </section>
       </main>
