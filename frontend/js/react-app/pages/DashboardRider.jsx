@@ -208,7 +208,8 @@ function DashboardRider() {
         const data = await response.json();
 
         // Si ya tiene vehículo registrado, redirigir al dashboard de conductor
-        if (data.success && data.data.vehicle) {
+        // El backend retorna 'vehiculo' no 'vehicle'
+        if (data.success && data.data.vehiculo) {
           console.log('✅ Usuario ya tiene vehículo registrado, redirigiendo a dashboard de conductor');
 
           // Actualizar el rol en el storage

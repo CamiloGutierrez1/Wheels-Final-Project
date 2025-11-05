@@ -202,6 +202,11 @@ function DashboardDriver() {
     }
   };
 
+  const handleSwitchToRider = () => {
+    // Cambiar al modo pasajero
+    window.location.href = 'dashboard.html#/dashboard/rider';
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO').format(price);
   };
@@ -223,6 +228,9 @@ function DashboardDriver() {
           </div>
           <div className="user-info">
             <span className="user-name">{userInfo?.name || 'Usuario'}</span>
+            <button className="btn-conductor" onClick={handleSwitchToRider}>
+              Volver a Pasajero
+            </button>
             <button className="btn-logout" onClick={handleLogout}>
               Cerrar Sesión
             </button>
