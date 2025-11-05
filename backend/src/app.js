@@ -58,6 +58,14 @@ app.use('/api/auth', authRoutes);
 const vehicleRoutes = require('./routes/vehicleRoutes');
 app.use('/api/vehicles', vehicleRoutes);
 
+// Rutas de viajes
+const tripRoutes = require('./routes/tripRoutes');
+app.use('/api/trips', tripRoutes);
+
+// Rutas de reservas
+const bookingRoutes = require('./routes/bookingRoutes');
+app.use('/api/bookings', bookingRoutes);
+
 // ===== MANEJO DE ERRORES =====
 // Ruta no encontrada (debe ir DESPUÉS de todas las rutas)
 app.use((req, res, next) => {

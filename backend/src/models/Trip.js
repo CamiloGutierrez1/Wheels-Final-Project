@@ -62,7 +62,7 @@ const tripSchema = new mongoose.Schema({
   estado: {
     type: String,
     enum: {
-      values: ['disponible', 'en_curso', 'completado', 'cancelado'],
+      values: ['disponible','lleno', 'en_curso', 'completado', 'cancelado'],
       message: '{VALUE} no es un estado válido'
     },
     default: 'disponible'
