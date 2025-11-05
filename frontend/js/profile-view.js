@@ -232,13 +232,14 @@ async function loadVehicleInfo() {
         if (confirm('Are you sure you want to log out?')) {
             // Limpiar datos de sesión
             sessionStorage.clear();
-            
-            // Opcional: mantener el email si "remember me" estaba activo
-            // localStorage.removeItem('selectedRole');
-            
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userRole');
+
             // Redirigir al login
-            window.location.href = 'login-driver.html';
-            
+            window.location.href = 'login.html';
+
             console.log('User logged out');
         }
     }

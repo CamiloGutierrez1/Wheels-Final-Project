@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
         handleSaveProfile();
     });
 
-    // Event listener para logout
+    // Event listener para cancelar (volver atrás)
     logoutBtn.addEventListener('click', () => {
-        handleLogout();
+        handleCancel();
     });
 
     // Función para verificar autenticación
@@ -56,49 +56,91 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Función para cargar perfil actual
-    function loadCurrentProfile() {
-        // Obtener datos guardados
-        const registrationData = JSON.parse(localStorage.getItem('registrationData') || '{}');
-        const userEmail = sessionStorage.getItem('userEmail');
-        const userRole = localStorage.getItem('selectedRole') || 'rider';
+    // Función para cargar perfil actual desde el backend
+    async function loadCurrentProfile() {
+        try {
+            const authToken = localStorage.getItem('token') || sessionStorage.getItem('authToken');
 
-        // Rellenar formulario con datos actuales
-        document.getElementById('firstName').value = registrationData.firstName || 'Hugo';
-        document.getElementById('lastName').value = registrationData.lastName || 'Ocallega';
-        document.getElementById('email').value = userEmail || registrationData.email || 'hugo@gmail.com';
-        document.getElementById('universityId').value = registrationData.universityId || '0000123456';
-        document.getElementById('phone').value = registrationData.phone || '+57 3124785471';
-        
-        // Actualizar nombre en top bar
-        const firstName = registrationData.firstName || 'Hugo';
-        document.getElementById('userName').textContent = firstName;
-        document.querySelector('.user-avatar').textContent = firstName.charAt(0).toUpperCase();
-
-        // Establecer rol
-        selectedRole = userRole;
-        selectRole(userRole);
-
-        // Si es driver, cargar datos del vehículo
-        if (userRole === 'driver' && registrationData.vehicle) {
-            document.getElementById('licensePlate').value = registrationData.vehicle.licensePlate || '';
-            document.getElementById('make').value = registrationData.vehicle.make || '';
-            document.getElementById('model').value = registrationData.vehicle.model || '';
-            
-            const capacity = registrationData.vehicle.capacity || 4;
-            capacityInput.value = capacity;
-            
-            // Activar botón de capacidad correspondiente
-            capacityButtons.forEach(btn => {
-                if (btn.dataset.capacity === capacity.toString()) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
+            // Llamar al backend para obtener perfil completo
+            const response = await fetch('https://wheels-final-project.onrender.com/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
                 }
             });
-        }
 
-        console.log('Profile loaded for editing');
+            if (!response.ok) {
+                throw new Error('Error loading profile');
+            }
+
+            const profileData = await response.json();
+            const user = profileData.data.user;
+
+            // Rellenar formulario con datos del usuario
+            document.getElementById('firstName').value = user.nombre || '';
+            document.getElementById('lastName').value = user.apellido || '';
+            document.getElementById('email').value = user.correo || '';
+            document.getElementById('universityId').value = user.idUniversidad || '';
+            document.getElementById('phone').value = user.telefono || '';
+
+            // Actualizar nombre en top bar
+            document.getElementById('userName').textContent = user.nombre;
+            document.querySelector('.user-avatar').textContent = user.nombre.charAt(0).toUpperCase();
+
+            // Establecer rol basado en el usuario
+            if (user.rol === 'conductor' || user.conductorRegistrado) {
+                selectedRole = 'driver';
+                selectRole('driver');
+
+                // Si es conductor, cargar datos del vehículo
+                await loadVehicleData(authToken);
+            } else {
+                selectedRole = 'rider';
+                selectRole('rider');
+            }
+
+            console.log('Profile loaded for editing:', user);
+
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            showError('Error loading profile. Please try again.');
+        }
+    }
+
+    // Función para cargar datos del vehículo
+    async function loadVehicleData(authToken) {
+        try {
+            const response = await fetch('https://wheels-final-project.onrender.com/api/vehicles/my-vehicle', {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.data.vehiculo) {
+                    const vehicle = data.data.vehiculo;
+                    document.getElementById('licensePlate').value = vehicle.placa || '';
+                    document.getElementById('make').value = vehicle.marca || '';
+                    document.getElementById('model').value = vehicle.modelo || '';
+
+                    const capacity = vehicle.capacidad || 4;
+                    capacityInput.value = capacity;
+
+                    // Activar botón de capacidad correspondiente
+                    capacityButtons.forEach(btn => {
+                        if (btn.dataset.capacity === capacity.toString()) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.log('No vehicle found or error loading vehicle:', error);
+        }
     }
 
     // Función para seleccionar rol
@@ -211,12 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Función para hacer logout
-    function handleLogout() {
-        if (confirm('Are you sure you want to log out?')) {
-            sessionStorage.clear();
-            window.location.href = 'login.html';
-            console.log('User logged out');
+    // Función para cancelar y volver a profile view
+    function handleCancel() {
+        if (confirm('Discard changes and go back?')) {
+            window.location.href = 'profile-view.html';
         }
     }
 
