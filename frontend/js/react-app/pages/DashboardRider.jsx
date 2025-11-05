@@ -51,19 +51,66 @@ function DashboardRider() {
     return true;
   };
 
-  // Cargar información del usuario
-  const loadUserInfo = () => {
-    const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Usuario';
+  // Cargar información del usuario desde el backend
+  const loadUserInfo = async () => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
 
-    // Obtener el objeto usuario completo del localStorage
-    const userDataString = localStorage.getItem('user');
-    const userData = userDataString ? JSON.parse(userDataString) : null;
+      // Obtener datos actualizados del usuario desde el backend
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-    setUserInfo({
-      name: userName,
-      role: userData?.rol || 'usuario',
-      conductorRegistrado: userData?.conductorRegistrado || false
-    });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data.user) {
+          const user = data.data.user;
+
+          // Actualizar localStorage con los datos más recientes
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('userName', `${user.nombre} ${user.apellido}`);
+
+          setUserInfo({
+            name: `${user.nombre} ${user.apellido}`,
+            role: user.rol || 'usuario',
+            conductorRegistrado: user.conductorRegistrado || false
+          });
+
+          console.log('✅ Usuario cargado desde backend:', {
+            nombre: `${user.nombre} ${user.apellido}`,
+            conductorRegistrado: user.conductorRegistrado
+          });
+          return;
+        }
+      }
+
+      // Si falla la petición, usar datos del localStorage como fallback
+      console.warn('⚠️ No se pudo cargar desde backend, usando localStorage');
+      const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Usuario';
+      const userDataString = localStorage.getItem('user');
+      const userData = userDataString ? JSON.parse(userDataString) : null;
+
+      setUserInfo({
+        name: userName,
+        role: userData?.rol || 'usuario',
+        conductorRegistrado: userData?.conductorRegistrado || false
+      });
+    } catch (error) {
+      console.error('Error al cargar usuario:', error);
+
+      // Fallback a localStorage si hay error
+      const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'Usuario';
+      const userDataString = localStorage.getItem('user');
+      const userData = userDataString ? JSON.parse(userDataString) : null;
+
+      setUserInfo({
+        name: userName,
+        role: userData?.rol || 'usuario',
+        conductorRegistrado: userData?.conductorRegistrado || false
+      });
+    }
   };
 
   // Cargar viajes
@@ -146,9 +193,49 @@ function DashboardRider() {
   };
 
   // Convertirse en conductor
-  const handleBecomeDriver = () => {
-    // Desde dashboard.html que está en pages/shared/, register-vehicle.html está en el mismo directorio
-    window.location.href = 'register-vehicle.html';
+  const handleBecomeDriver = async () => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
+
+      // Verificar si el usuario ya tiene un vehículo registrado
+      const response = await fetch(`${API_BASE_URL}/vehicles/my-vehicle`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // Si ya tiene vehículo registrado, redirigir al dashboard de conductor
+        if (data.success && data.data.vehicle) {
+          console.log('✅ Usuario ya tiene vehículo registrado, redirigiendo a dashboard de conductor');
+
+          // Actualizar el rol en el storage
+          const userDataString = localStorage.getItem('user');
+          if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            userData.rol = 'conductor';
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('userRole', 'conductor');
+            sessionStorage.setItem('userRole', 'conductor');
+          }
+
+          // Redirigir al dashboard de conductor
+          window.location.href = 'dashboard.html#/dashboard/driver';
+          return;
+        }
+      }
+
+      // Si no tiene vehículo, redirigir a registro de vehículo
+      console.log('ℹ️ Usuario sin vehículo, redirigiendo a registro');
+      window.location.href = 'register-vehicle.html';
+
+    } catch (error) {
+      console.error('Error al verificar vehículo:', error);
+      // En caso de error, redirigir a registro de vehículo por seguridad
+      window.location.href = 'register-vehicle.html';
+    }
   };
 
   return (
