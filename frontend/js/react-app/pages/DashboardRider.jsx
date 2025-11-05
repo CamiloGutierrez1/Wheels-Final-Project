@@ -248,11 +248,9 @@ function DashboardRider() {
           </div>
           <div className="user-info">
             <span className="user-name">{userInfo?.name || 'Usuario'}</span>
-            {!userInfo?.conductorRegistrado && (
-              <button className="btn-conductor" onClick={handleBecomeDriver}>
-                Convertirse en Conductor
-              </button>
-            )}
+            <button className="btn-conductor" onClick={handleBecomeDriver}>
+              Convertirse en Conductor
+            </button>
             <button className="btn-logout" onClick={handleLogout}>
               Cerrar Sesión
             </button>
