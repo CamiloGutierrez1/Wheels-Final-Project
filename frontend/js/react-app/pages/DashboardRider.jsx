@@ -442,6 +442,20 @@ function DashboardRider() {
                           <span className="detail-label">Teléfono conductor:</span>
                           <span className="detail-value">{booking.viaje?.conductor?.telefono}</span>
                         </div>
+                        {booking.viaje?.vehiculo && (
+                          <>
+                            <div className="detail-row">
+                              <span className="detail-label">Vehículo:</span>
+                              <span className="detail-value">
+                                {booking.viaje.vehiculo.marca} {booking.viaje.vehiculo.modelo}
+                              </span>
+                            </div>
+                            <div className="detail-row">
+                              <span className="detail-label">Placa:</span>
+                              <span className="detail-value">{booking.viaje.vehiculo.placa}</span>
+                            </div>
+                          </>
+                        )}
                         <div className="detail-row">
                           <span className="detail-label">Hora de salida:</span>
                           <span className="detail-value">{booking.viaje?.hora}</span>

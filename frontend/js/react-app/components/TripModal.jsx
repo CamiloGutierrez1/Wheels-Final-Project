@@ -117,6 +117,24 @@ function TripModal({ trip, onClose, onSuccess }) {
               </span>
             </div>
             <div className="summary-row">
+              <span className="summary-label">Teléfono:</span>
+              <span className="summary-value">{trip.conductor?.telefono || 'N/A'}</span>
+            </div>
+            {trip.vehiculo && (
+              <>
+                <div className="summary-row">
+                  <span className="summary-label">Vehículo:</span>
+                  <span className="summary-value">
+                    {trip.vehiculo.marca} {trip.vehiculo.modelo}
+                  </span>
+                </div>
+                <div className="summary-row">
+                  <span className="summary-label">Placa:</span>
+                  <span className="summary-value">{trip.vehiculo.placa}</span>
+                </div>
+              </>
+            )}
+            <div className="summary-row">
               <span className="summary-label">Ruta:</span>
               <span className="summary-value">{trip.origen} → {trip.destino}</span>
             </div>

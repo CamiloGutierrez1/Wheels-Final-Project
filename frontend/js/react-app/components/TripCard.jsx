@@ -76,6 +76,20 @@ function TripCard({ trip, onSelect }) {
             <div key={idx}>{line}</div>
           ))}
         </div>
+        {trip.vehiculo && (
+          <>
+            <div className="detail-row">
+              <span className="detail-label">Vehículo:</span>
+              <span className="detail-value">
+                {trip.vehiculo.marca} {trip.vehiculo.modelo}
+              </span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Placa:</span>
+              <span className="detail-value">{trip.vehiculo.placa}</span>
+            </div>
+          </>
+        )}
         <div className="detail-row">
           <span className="detail-label">Cupos disponibles:</span>
           <span className="detail-value">{trip.asientosDisponibles}</span>
