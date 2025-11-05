@@ -87,5 +87,6 @@ const verificarRol = (...rolesPermitidos) => {
 
 module.exports = {
   protegerRuta,
+  protect: protegerRuta
   // verificarRol // Comentado - ya no se exporta
 };
