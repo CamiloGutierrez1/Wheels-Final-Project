@@ -207,6 +207,10 @@ function DashboardDriver() {
     window.location.href = 'dashboard.html#/dashboard/rider';
   };
 
+  const handleGoToProfile = () => {
+    window.location.href = 'profile-view.html';
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO').format(price);
   };
@@ -227,7 +231,9 @@ function DashboardDriver() {
             <h1 className="logo-title">WHEELS <span className="car-icon">🚗</span></h1>
           </div>
           <div className="user-info">
-            <span className="user-name">{userInfo?.name || 'Usuario'}</span>
+            <span className="user-name" onClick={handleGoToProfile} style={{ cursor: 'pointer' }}>
+              {userInfo?.name || 'Usuario'}
+            </span>
             <button className="btn-conductor" onClick={handleSwitchToRider}>
               Volver a Pasajero
             </button>
