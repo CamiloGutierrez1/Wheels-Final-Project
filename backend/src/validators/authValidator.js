@@ -58,14 +58,57 @@ const validarLogin = [
     .notEmpty().withMessage('El correo es requerido')
     .isEmail().withMessage('Debe ser un correo válido')
     .normalizeEmail(),
-  
+
   body('password')
     .notEmpty().withMessage('La contraseña es requerida'),
-  
+
+  manejarErroresValidacion
+];
+
+// Validaciones para actualizar perfil
+const validarActualizarPerfil = [
+  body('nombre')
+    .optional()
+    .trim()
+    .isLength({ min: 2 }).withMessage('El nombre debe tener al menos 2 caracteres'),
+
+  body('apellido')
+    .optional()
+    .trim()
+    .isLength({ min: 2 }).withMessage('El apellido debe tener al menos 2 caracteres'),
+
+  body('telefono')
+    .optional()
+    .trim()
+    .matches(/^[0-9]{10}$/).withMessage('El teléfono debe tener 10 dígitos'),
+
+  manejarErroresValidacion
+];
+
+// Validaciones para cambiar contraseña
+const validarCambioPassword = [
+  body('passwordActual')
+    .notEmpty().withMessage('La contraseña actual es requerida'),
+
+  body('passwordNuevo')
+    .notEmpty().withMessage('La contraseña nueva es requerida')
+    .isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+
+  body('confirmarPassword')
+    .notEmpty().withMessage('Debe confirmar la contraseña')
+    .custom((value, { req }) => {
+      if (value !== req.body.passwordNuevo) {
+        throw new Error('Las contraseñas no coinciden');
+      }
+      return true;
+    }),
+
   manejarErroresValidacion
 ];
 
 module.exports = {
   validarRegistro,
-  validarLogin
+  validarLogin,
+  validarActualizarPerfil,
+  validarCambioPassword
 };

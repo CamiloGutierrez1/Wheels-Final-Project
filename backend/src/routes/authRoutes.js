@@ -6,9 +6,11 @@ const {
   cerrarSesion,
   cerrarTodasSesiones,
   obtenerPerfil,
-  verificarEstadoConductor
+  verificarEstadoConductor,
+  actualizarPerfil,
+  cambiarPassword
 } = require('../controllers/authController');
-const { validarRegistro, validarLogin } = require('../validators/authValidator');
+const { validarRegistro, validarLogin, validarActualizarPerfil, validarCambioPassword } = require('../validators/authValidator');
 const { protegerRuta } = require('../middlewares/authMiddleware');
 
 // ===== RUTAS PÚBLICAS =====
@@ -54,5 +56,19 @@ router.get('/me', protegerRuta, obtenerPerfil);
  * @access  Private
  */
 router.get('/check-driver-status', protegerRuta, verificarEstadoConductor);
+
+/**
+ * @route   PUT /api/auth/profile
+ * @desc    Actualizar perfil del usuario (nombre, apellido, teléfono)
+ * @access  Private
+ */
+router.put('/profile', protegerRuta, validarActualizarPerfil, actualizarPerfil);
+
+/**
+ * @route   PUT /api/auth/change-password
+ * @desc    Cambiar contraseña del usuario
+ * @access  Private
+ */
+router.put('/change-password', protegerRuta, validarCambioPassword, cambiarPassword);
 
 module.exports = router;

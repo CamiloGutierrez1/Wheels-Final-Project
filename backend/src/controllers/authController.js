@@ -202,10 +202,10 @@ const obtenerPerfil = async (req, res) => {
 const verificarEstadoConductor = async (req, res) => {
   try {
     const Vehicle = require('../models/Vehicle');
-    
+
     // Verificar si tiene vehículo
     const vehiculo = await Vehicle.findOne({ conductorId: req.user._id });
-    
+
     res.status(200).json({
       success: true,
       data: {
@@ -224,11 +224,123 @@ const verificarEstadoConductor = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Actualizar perfil del usuario (nombre, apellido, teléfono)
+ * @route   PUT /api/auth/profile
+ * @access  Private
+ */
+const actualizarPerfil = async (req, res) => {
+  try {
+    const { nombre, apellido, telefono } = req.body;
+
+    // Crear objeto con los campos a actualizar (solo los que vienen)
+    const actualizaciones = {};
+    if (nombre) actualizaciones.nombre = nombre;
+    if (apellido) actualizaciones.apellido = apellido;
+    if (telefono) actualizaciones.telefono = telefono;
+
+    if (Object.keys(actualizaciones).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Debes proporcionar al menos un campo para actualizar'
+      });
+    }
+
+    // Actualizar usuario
+    const usuarioActualizado = await User.findByIdAndUpdate(
+      req.user._id,
+      actualizaciones,
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Perfil actualizado exitosamente',
+      data: {
+        user: usuarioActualizado
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar perfil',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @desc    Cambiar contraseña del usuario
+ * @route   PUT /api/auth/change-password
+ * @access  Private
+ */
+const cambiarPassword = async (req, res) => {
+  try {
+    const { passwordActual, passwordNuevo } = req.body;
+
+    // Obtener usuario con password incluido
+    const usuario = await User.findById(req.user._id).select('+password');
+
+    if (!usuario) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    // Verificar que la contraseña actual sea correcta
+    const passwordValido = await usuario.compararPassword(passwordActual);
+
+    if (!passwordValido) {
+      return res.status(401).json({
+        success: false,
+        message: 'La contraseña actual es incorrecta'
+      });
+    }
+
+    // Verificar que la nueva contraseña sea diferente de la actual
+    const mismaPassword = await usuario.compararPassword(passwordNuevo);
+
+    if (mismaPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'La nueva contraseña debe ser diferente a la actual'
+      });
+    }
+
+    // Actualizar contraseña (se hashea automáticamente en pre-save)
+    usuario.password = passwordNuevo;
+    await usuario.save();
+
+    // Opcional: Invalidar todos los tokens excepto el actual para seguridad
+    // Este es un patrón común para forzar re-login después de cambio de password
+    // Por ahora, mantenemos la sesión actual activa
+    // Si quieres que se cierre sesión, descomenta estas líneas:
+    // usuario.tokens = []; // Limpiar todos los tokens
+    // await usuario.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Contraseña cambiada exitosamente'
+    });
+  } catch (error) {
+    console.error('Error al cambiar contraseña:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al cambiar contraseña',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   registrarUsuario,
   iniciarSesion,
   cerrarSesion,
   cerrarTodasSesiones,
   obtenerPerfil,
-  verificarEstadoConductor
+  verificarEstadoConductor,
+  actualizarPerfil,
+  cambiarPassword
 };
