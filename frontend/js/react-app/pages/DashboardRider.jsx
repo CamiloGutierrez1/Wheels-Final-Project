@@ -416,12 +416,12 @@ function DashboardRider() {
               ) : (
                 <div className="trips-container">
                   {myBookings.map((booking) => (
-                    <div key={booking._id} className="trip-card">
+                    <div key={booking._id} className="trip-card" style={{ position: 'relative', paddingTop: '40px' }}>
                       <span className={`status-badge ${
                         booking.estado === 'confirmada' ? 'available' :
                         booking.estado === 'pendiente' ? 'warning' :
                         booking.estado === 'cancelada' ? 'full' : 'available'
-                      }`}>
+                      }`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
                         {booking.estado.toUpperCase()}
                       </span>
 

@@ -498,11 +498,11 @@ function DashboardDriver() {
               ) : (
                 <div className="trips-container">
                   {myTrips.map(trip => (
-                    <div key={trip._id} className="trip-card">
-                      <span className={`status-badge ${trip.estado === 'activo' ? 'available' : 'full'}`}>
+                    <div key={trip._id} className="trip-card" style={{ position: 'relative', paddingTop: '40px' }}>
+                      <span className={`status-badge ${trip.estado === 'activo' ? 'available' : 'full'}`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
                         {trip.estado?.toUpperCase() || 'ACTIVO'}
                       </span>
-                      
+
                       <div className="trip-details">
                         <div className="detail-row">
                           <span className="detail-label">Punto inicio:</span>
@@ -589,11 +589,11 @@ function DashboardDriver() {
               ) : (
                 <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
                   {bookings.map((booking) => (
-                    <div key={booking._id} className="trip-card" style={{ marginBottom: '15px' }}>
+                    <div key={booking._id} className="trip-card" style={{ marginBottom: '15px', position: 'relative', paddingTop: '40px' }}>
                       <span className={`status-badge ${
                         booking.estado === 'confirmada' ? 'available' :
                         booking.estado === 'pendiente' ? 'warning' : 'full'
-                      }`}>
+                      }`} style={{ position: 'absolute', top: '10px', right: '10px' }}>
                         {booking.estado.toUpperCase()}
                       </span>
 
