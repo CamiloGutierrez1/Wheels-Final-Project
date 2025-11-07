@@ -11,14 +11,22 @@ function TripCard({ trip, onSelect }) {
     if (Array.isArray(ruta)) {
       return ruta.join(' → ');
     }
-    return ruta || 'N/A';
+    if (typeof ruta === 'string' && ruta.trim() !== '') {
+      return ruta.split(',').map(p => p.trim()).join(' → ');
+    }
+    return 'N/A';
   };
 
   const formatRouteDetailed = (ruta) => {
+    let rutaArray = [];
     if (Array.isArray(ruta)) {
-      return ruta.map((punto, index) => `${index + 1}. ${punto}`).join('\n');
+      rutaArray = ruta;
+    } else if (typeof ruta === 'string' && ruta.trim() !== '') {
+      rutaArray = ruta.split(',').map(p => p.trim());
+    } else {
+      return 'N/A';
     }
-    return ruta || 'N/A';
+    return rutaArray.map((punto, index) => `${index + 1}. ${punto}`).join('\n');
   };
 
   return (
@@ -28,14 +36,20 @@ function TripCard({ trip, onSelect }) {
       </span>
       
       <div className="driver-info">
-        <img
-          src={trip.conductor?.foto || 'https://via.placeholder.com/50'}
-          alt="Foto conductor"
-          className="driver-photo"
-          onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/50';
-          }}
-        />
+        {trip.conductor?.foto ? (
+          <img
+            src={trip.conductor.foto}
+            alt="Foto conductor"
+            className="driver-photo"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        ) : (
+          <div className="driver-photo-placeholder">
+            {(trip.conductor?.nombre || 'C').charAt(0).toUpperCase()}
+          </div>
+        )}
         <div className="driver-details">
           <h3>
             {trip.conductor?.nombre || 'Conductor'} {trip.conductor?.apellido || ''}
@@ -62,6 +76,20 @@ function TripCard({ trip, onSelect }) {
             <div key={idx}>{line}</div>
           ))}
         </div>
+        {trip.vehiculo && (
+          <>
+            <div className="detail-row">
+              <span className="detail-label">Vehículo:</span>
+              <span className="detail-value">
+                {trip.vehiculo.marca} {trip.vehiculo.modelo}
+              </span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Placa:</span>
+              <span className="detail-value">{trip.vehiculo.placa}</span>
+            </div>
+          </>
+        )}
         <div className="detail-row">
           <span className="detail-label">Cupos disponibles:</span>
           <span className="detail-value">{trip.asientosDisponibles}</span>

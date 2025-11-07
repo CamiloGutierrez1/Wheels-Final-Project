@@ -15,7 +15,16 @@ function TripModal({ trip, onClose, onSuccess }) {
   const totalPrice = numCupos ? trip.precio * parseInt(numCupos) : 0;
 
   // Obtener puntos de recogida disponibles
-  const availablePickupPoints = trip.ruta || [trip.origen, trip.destino];
+  // Backend returns ruta as a comma-separated string, convert to array
+  const availablePickupPoints = (() => {
+    if (Array.isArray(trip.ruta)) {
+      return trip.ruta;
+    }
+    if (typeof trip.ruta === 'string' && trip.ruta.trim() !== '') {
+      return trip.ruta.split(',').map(p => p.trim());
+    }
+    return [trip.origen, trip.destino];
+  })();
 
   // Actualizar puntos de recogida cuando cambia el número de cupos
   useEffect(() => {
@@ -69,8 +78,6 @@ function TripModal({ trip, onClose, onSuccess }) {
         body: JSON.stringify({
           numCupos: parseInt(numCupos),
           pickupPoints: pickupPoints.map(p => ({
-            cupo: p.cupo,
-            puntoIndex: parseInt(p.puntoIndex),
             puntoNombre: p.puntoNombre
           }))
         })
@@ -109,6 +116,24 @@ function TripModal({ trip, onClose, onSuccess }) {
                 {trip.conductor?.nombre || ''} {trip.conductor?.apellido || ''}
               </span>
             </div>
+            <div className="summary-row">
+              <span className="summary-label">Teléfono:</span>
+              <span className="summary-value">{trip.conductor?.telefono || 'N/A'}</span>
+            </div>
+            {trip.vehiculo && (
+              <>
+                <div className="summary-row">
+                  <span className="summary-label">Vehículo:</span>
+                  <span className="summary-value">
+                    {trip.vehiculo.marca} {trip.vehiculo.modelo}
+                  </span>
+                </div>
+                <div className="summary-row">
+                  <span className="summary-label">Placa:</span>
+                  <span className="summary-value">{trip.vehiculo.placa}</span>
+                </div>
+              </>
+            )}
             <div className="summary-row">
               <span className="summary-label">Ruta:</span>
               <span className="summary-value">{trip.origen} → {trip.destino}</span>

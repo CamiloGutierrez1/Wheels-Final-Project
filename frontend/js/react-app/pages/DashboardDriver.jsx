@@ -19,6 +19,9 @@ function DashboardDriver() {
   const [userInfo, setUserInfo] = useState(null);
   const [myTrips, setMyTrips] = useState([]);
   const [showTrips, setShowTrips] = useState(false);
+  const [selectedTripForBookings, setSelectedTripForBookings] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -137,7 +140,7 @@ function DashboardDriver() {
         ...validRutaPoints.slice(1, -1), // Puntos intermedios (excluyendo origen y destino si están duplicados)
         formData.destino
       ];
-      
+
       // Si el primer punto de ruta es diferente al origen, usarlo
       if (validRutaPoints[0] && validRutaPoints[0] !== formData.origen) {
         rutaCompleta[0] = validRutaPoints[0];
@@ -146,7 +149,7 @@ function DashboardDriver() {
       const tripData = {
         origen: formData.origen,
         destino: formData.destino,
-        ruta: rutaCompleta,
+        ruta: rutaCompleta.join(', '), // Backend expects string, not array
         hora: formData.hora,
         asientosDisponibles: asientos,
         asientosTotales: asientos,
@@ -221,7 +224,78 @@ function DashboardDriver() {
     if (Array.isArray(ruta)) {
       return ruta.join(' → ');
     }
-    return ruta || 'N/A';
+    if (typeof ruta === 'string' && ruta.trim() !== '') {
+      // Convert comma-separated string to arrow-separated format
+      return ruta.split(',').map(p => p.trim()).join(' → ');
+    }
+    return 'N/A';
+  };
+
+  // Cargar reservas de un viaje específico
+  const loadBookingsForTrip = async (tripId) => {
+    try {
+      setLoadingBookings(true);
+      const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
+
+      const response = await fetch(`${API_BASE_URL}/bookings/trip/${tripId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setBookings(data.data.bookings || []);
+        setSelectedTripForBookings(tripId);
+      } else {
+        setError(data.message || 'Error al cargar reservas');
+        setBookings([]);
+      }
+    } catch (err) {
+      console.error('Error cargando reservas:', err);
+      setError('Error al cargar reservas');
+      setBookings([]);
+    } finally {
+      setLoadingBookings(false);
+    }
+  };
+
+  // Confirmar una reserva
+  const handleConfirmBooking = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
+
+      const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}/confirm`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        alert('Reserva confirmada exitosamente');
+        // Recargar reservas
+        if (selectedTripForBookings) {
+          loadBookingsForTrip(selectedTripForBookings);
+        }
+        // Recargar mis viajes para actualizar cupos
+        loadMyTrips();
+      } else {
+        alert(data.message || 'Error al confirmar reserva');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Error al confirmar reserva');
+    }
+  };
+
+  // Cerrar modal de reservas
+  const handleCloseBookingsModal = () => {
+    setSelectedTripForBookings(null);
+    setBookings([]);
   };
 
   return (
@@ -469,6 +543,15 @@ function DashboardDriver() {
                           <span className="detail-value">${formatPrice(trip.precio)}</span>
                         </div>
                       </div>
+
+                      {/* Botón para ver reservas */}
+                      <button
+                        className="btn-search"
+                        onClick={() => loadBookingsForTrip(trip._id)}
+                        style={{ marginTop: '15px', width: '100%' }}
+                      >
+                        Ver Reservas ({trip.reservas?.length || 0})
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -477,6 +560,80 @@ function DashboardDriver() {
           )}
         </section>
       </main>
+
+      {/* Modal de Reservas */}
+      {selectedTripForBookings && (
+        <div className="modal" onClick={handleCloseBookingsModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '700px' }}>
+            <div className="modal-header">
+              <h2>Reservas del Viaje</h2>
+              <button className="modal-close" onClick={handleCloseBookingsModal}>&times;</button>
+            </div>
+
+            <div className="modal-body">
+              {loadingBookings ? (
+                <div className="loading-state">
+                  <div className="spinner"></div>
+                  <p>Cargando reservas...</p>
+                </div>
+              ) : bookings.length === 0 ? (
+                <div className="empty-state">
+                  <p>No hay reservas para este viaje aún</p>
+                </div>
+              ) : (
+                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                  {bookings.map((booking) => (
+                    <div key={booking._id} className="trip-card" style={{ marginBottom: '15px' }}>
+                      <span className={`status-badge ${
+                        booking.estado === 'confirmada' ? 'available' :
+                        booking.estado === 'pendiente' ? 'warning' : 'full'
+                      }`}>
+                        {booking.estado.toUpperCase()}
+                      </span>
+
+                      <div className="trip-details">
+                        <div className="detail-row">
+                          <span className="detail-label">Pasajero:</span>
+                          <span className="detail-value">
+                            {booking.pasajero?.nombre} {booking.pasajero?.apellido}
+                          </span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Teléfono:</span>
+                          <span className="detail-value">{booking.pasajero?.telefono}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Cupos reservados:</span>
+                          <span className="detail-value">{booking.cuposReservados}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Punto de recogida:</span>
+                          <span className="detail-value">{booking.puntoRecogida}</span>
+                        </div>
+                        <div className="detail-row">
+                          <span className="detail-label">Total a pagar:</span>
+                          <span className="detail-value">${formatPrice(booking.precioTotal)}</span>
+                        </div>
+
+                        {/* Botón de confirmar solo si está pendiente */}
+                        {booking.estado === 'pendiente' && (
+                          <button
+                            className="btn-confirm"
+                            onClick={() => handleConfirmBooking(booking._id)}
+                            style={{ marginTop: '10px', width: '100%' }}
+                          >
+                            Confirmar Reserva
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
