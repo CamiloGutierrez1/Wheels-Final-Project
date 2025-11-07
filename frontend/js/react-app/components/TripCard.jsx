@@ -80,9 +80,24 @@ function TripCard({ trip, onSelect }) {
           <span className="detail-value">{formatRoute(trip.ruta, trip.origen, trip.destino)}</span>
         </div>
         <div className="route-display">
-          {formatRouteDetailed(trip.ruta, trip.origen, trip.destino).split('\n').map((line, idx) => (
-            <div key={idx}>{line}</div>
-          ))}
+          {(() => {
+            // Solo mostrar puntos intermedios en el box
+            const points = [];
+            if (Array.isArray(trip.ruta) && trip.ruta.length > 0) {
+              points.push(...trip.ruta);
+            } else if (typeof trip.ruta === 'string' && trip.ruta.trim() !== '') {
+              const rutaArray = trip.ruta.split(',').map(p => p.trim()).filter(p => p !== '');
+              points.push(...rutaArray);
+            }
+
+            if (points.length === 0) {
+              return <div>Sin puntos intermedios</div>;
+            }
+
+            return points.map((punto, idx) => (
+              <div key={idx}>{idx + 1}. {punto}</div>
+            ));
+          })()}
         </div>
         {trip.vehiculo && (
           <>

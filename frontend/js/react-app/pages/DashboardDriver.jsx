@@ -518,14 +518,19 @@ function DashboardDriver() {
                         </div>
                         <div className="route-display">
                           {(() => {
-                            const points = [trip.origen];
+                            // Solo mostrar puntos intermedios en el box
+                            const points = [];
                             if (Array.isArray(trip.ruta) && trip.ruta.length > 0) {
                               points.push(...trip.ruta);
                             } else if (typeof trip.ruta === 'string' && trip.ruta.trim() !== '') {
                               const rutaArray = trip.ruta.split(',').map(p => p.trim()).filter(p => p !== '');
                               points.push(...rutaArray);
                             }
-                            points.push(trip.destino);
+
+                            if (points.length === 0) {
+                              return <div>Sin puntos intermedios</div>;
+                            }
+
                             return points.map((punto, idx) => (
                               <div key={idx}>{idx + 1}. {punto}</div>
                             ));
