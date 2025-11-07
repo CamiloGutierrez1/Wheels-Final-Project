@@ -313,12 +313,7 @@ const cambiarPassword = async (req, res) => {
     usuario.password = passwordNuevo;
     await usuario.save();
 
-    // Opcional: Invalidar todos los tokens excepto el actual para seguridad
-    // Este es un patrón común para forzar re-login después de cambio de password
-    // Por ahora, mantenemos la sesión actual activa
-    // Si quieres que se cierre sesión, descomenta estas líneas:
-    // usuario.tokens = []; // Limpiar todos los tokens
-    // await usuario.save();
+
 
     res.status(200).json({
       success: true,
