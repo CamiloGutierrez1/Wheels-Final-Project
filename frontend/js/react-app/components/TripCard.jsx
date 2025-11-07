@@ -7,26 +7,34 @@ function TripCard({ trip, onSelect }) {
     return new Intl.NumberFormat('es-CO').format(price);
   };
 
-  const formatRoute = (ruta) => {
-    if (Array.isArray(ruta)) {
-      return ruta.join(' → ');
+  const formatRoute = (ruta, origen, destino) => {
+    const points = [origen]; // Siempre incluir origen
+
+    // Agregar puntos intermedios si existen
+    if (Array.isArray(ruta) && ruta.length > 0) {
+      points.push(...ruta);
+    } else if (typeof ruta === 'string' && ruta.trim() !== '') {
+      const rutaArray = ruta.split(',').map(p => p.trim()).filter(p => p !== '');
+      points.push(...rutaArray);
     }
-    if (typeof ruta === 'string' && ruta.trim() !== '') {
-      return ruta.split(',').map(p => p.trim()).join(' → ');
-    }
-    return 'N/A';
+
+    points.push(destino); // Siempre incluir destino
+    return points.join(' → ');
   };
 
-  const formatRouteDetailed = (ruta) => {
-    let rutaArray = [];
-    if (Array.isArray(ruta)) {
-      rutaArray = ruta;
+  const formatRouteDetailed = (ruta, origen, destino) => {
+    const points = [origen]; // Siempre incluir origen
+
+    // Agregar puntos intermedios si existen
+    if (Array.isArray(ruta) && ruta.length > 0) {
+      points.push(...ruta);
     } else if (typeof ruta === 'string' && ruta.trim() !== '') {
-      rutaArray = ruta.split(',').map(p => p.trim());
-    } else {
-      return 'N/A';
+      const rutaArray = ruta.split(',').map(p => p.trim()).filter(p => p !== '');
+      points.push(...rutaArray);
     }
-    return rutaArray.map((punto, index) => `${index + 1}. ${punto}`).join('\n');
+
+    points.push(destino); // Siempre incluir destino
+    return points.map((punto, index) => `${index + 1}. ${punto}`).join('\n');
   };
 
   return (
@@ -68,11 +76,11 @@ function TripCard({ trip, onSelect }) {
           <span className="detail-value">{trip.destino}</span>
         </div>
         <div className="detail-row">
-          <span className="detail-label">Ruta:</span>
-          <span className="detail-value">{formatRoute(trip.ruta)}</span>
+          <span className="detail-label">Ruta completa:</span>
+          <span className="detail-value">{formatRoute(trip.ruta, trip.origen, trip.destino)}</span>
         </div>
         <div className="route-display">
-          {formatRouteDetailed(trip.ruta).split('\n').map((line, idx) => (
+          {formatRouteDetailed(trip.ruta, trip.origen, trip.destino).split('\n').map((line, idx) => (
             <div key={idx}>{line}</div>
           ))}
         </div>

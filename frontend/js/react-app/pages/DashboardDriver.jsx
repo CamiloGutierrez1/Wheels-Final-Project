@@ -99,21 +99,16 @@ function DashboardDriver() {
     setError(null);
     setSuccess(null);
 
-    // Validar que todos los campos estén llenos
-    if (!formData.origen || !formData.destino || !formData.hora || 
+    // Validar que todos los campos obligatorios estén llenos
+    if (!formData.origen || !formData.destino || !formData.hora ||
         !formData.asientosDisponibles || !formData.precio) {
-      setError('Por favor completa todos los campos');
+      setError('Por favor completa todos los campos obligatorios');
       setLoading(false);
       return;
     }
 
-    // Validar ruta (debe tener al menos origen y destino)
+    // Filtrar puntos intermedios válidos (los que tienen contenido)
     const validRutaPoints = rutaPoints.filter(p => p.trim() !== '');
-    if (validRutaPoints.length < 2) {
-      setError('La ruta debe tener al menos 2 puntos (origen y destino)');
-      setLoading(false);
-      return;
-    }
 
     // Validar asientos (1-5)
     const asientos = parseInt(formData.asientosDisponibles);
@@ -133,23 +128,15 @@ function DashboardDriver() {
 
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
-      
-      // Construir la ruta completa: origen + puntos intermedios + destino
-      const rutaCompleta = [
-        formData.origen,
-        ...validRutaPoints.slice(1, -1), // Puntos intermedios (excluyendo origen y destino si están duplicados)
-        formData.destino
-      ];
 
-      // Si el primer punto de ruta es diferente al origen, usarlo
-      if (validRutaPoints[0] && validRutaPoints[0] !== formData.origen) {
-        rutaCompleta[0] = validRutaPoints[0];
-      }
+      // La ruta solo debe contener puntos intermedios (sin origen ni destino)
+      // Los validRutaPoints son los que el usuario ingresó como puntos intermedios
+      const rutaIntermedia = validRutaPoints.filter(p => p.trim() !== '');
 
       const tripData = {
         origen: formData.origen,
         destino: formData.destino,
-        ruta: rutaCompleta.join(', '), // Backend expects string, not array
+        ruta: rutaIntermedia.join(', '), // Solo puntos intermedios
         hora: formData.hora,
         asientosDisponibles: asientos,
         asientosTotales: asientos,
@@ -220,15 +207,19 @@ function DashboardDriver() {
     return new Intl.NumberFormat('es-CO').format(price);
   };
 
-  const formatRoute = (ruta) => {
-    if (Array.isArray(ruta)) {
-      return ruta.join(' → ');
+  const formatRoute = (ruta, origen, destino) => {
+    const points = [origen]; // Siempre incluir origen
+
+    // Agregar puntos intermedios si existen
+    if (Array.isArray(ruta) && ruta.length > 0) {
+      points.push(...ruta);
+    } else if (typeof ruta === 'string' && ruta.trim() !== '') {
+      const rutaArray = ruta.split(',').map(p => p.trim()).filter(p => p !== '');
+      points.push(...rutaArray);
     }
-    if (typeof ruta === 'string' && ruta.trim() !== '') {
-      // Convert comma-separated string to arrow-separated format
-      return ruta.split(',').map(p => p.trim()).join(' → ');
-    }
-    return 'N/A';
+
+    points.push(destino); // Siempre incluir destino
+    return points.join(' → ');
   };
 
   // Cargar reservas de un viaje específico
@@ -522,13 +513,23 @@ function DashboardDriver() {
                           <span className="detail-value">{trip.destino}</span>
                         </div>
                         <div className="detail-row">
-                          <span className="detail-label">Ruta:</span>
-                          <span className="detail-value">{formatRoute(trip.ruta)}</span>
+                          <span className="detail-label">Ruta completa:</span>
+                          <span className="detail-value">{formatRoute(trip.ruta, trip.origen, trip.destino)}</span>
                         </div>
                         <div className="route-display">
-                          {Array.isArray(trip.ruta) ? trip.ruta.map((punto, idx) => (
-                            <div key={idx}>{idx + 1}. {punto}</div>
-                          )) : trip.ruta}
+                          {(() => {
+                            const points = [trip.origen];
+                            if (Array.isArray(trip.ruta) && trip.ruta.length > 0) {
+                              points.push(...trip.ruta);
+                            } else if (typeof trip.ruta === 'string' && trip.ruta.trim() !== '') {
+                              const rutaArray = trip.ruta.split(',').map(p => p.trim()).filter(p => p !== '');
+                              points.push(...rutaArray);
+                            }
+                            points.push(trip.destino);
+                            return points.map((punto, idx) => (
+                              <div key={idx}>{idx + 1}. {punto}</div>
+                            ));
+                          })()}
                         </div>
                         <div className="detail-row">
                           <span className="detail-label">Hora de salida:</span>
