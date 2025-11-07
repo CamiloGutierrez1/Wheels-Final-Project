@@ -15,11 +15,11 @@ function TripModal({ trip, onClose, onSuccess }) {
   const totalPrice = numCupos ? trip.precio * parseInt(numCupos) : 0;
 
   // Obtener puntos de recogida disponibles
-  // Incluir origen + puntos intermedios (ruta), pero NO el destino
+  // SOLO puntos intermedios (ruta), sin origen ni destino
   const availablePickupPoints = (() => {
-    const points = [trip.origen]; // Siempre incluir el origen
+    const points = [];
 
-    // Agregar puntos intermedios si existen
+    // Solo agregar puntos intermedios
     if (Array.isArray(trip.ruta) && trip.ruta.length > 0) {
       points.push(...trip.ruta);
     } else if (typeof trip.ruta === 'string' && trip.ruta.trim() !== '') {
@@ -27,7 +27,6 @@ function TripModal({ trip, onClose, onSuccess }) {
       points.push(...rutaArray);
     }
 
-    // NO incluir el destino como punto de recogida
     return points;
   })();
 
