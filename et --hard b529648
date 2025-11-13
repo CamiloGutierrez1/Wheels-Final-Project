@@ -1,0 +1,62 @@
+[33mcf525a2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Volviendo
+[33m671241c[m Arreglando TODO
+[33md4123cf[m Corrigiendo Rutas
+[33m273515a[m Arreglando rutas y flujo
+[33m9e017bb[m Migración a React de páginas estaticas
+[33mb529648[m Cambios estéticos
+[33m69eba43[m Corregido todo
+[33m4eca87f[m Bug Corregido ya
+[33mc7c3179[m Corrigiendo bug , puntos intermedios
+[33mf092f08[m Conectando Back con Front en Gestión de Perfil
+[33mbe46037[m Funciones de editar perfil y cambio de contraseña
+[33m71c8403[m Merge branch 'main' of https://github.com/CamiloGutierrez1/Wheels-Final-Project
+[33m283b7bd[m Funciones de edición de perfil y cambio de contraseña
+[33mccc0000[m Agregando datos del vehiculo a la tarjeta
+[33ma62dd6b[m Corrigiendo bugs de mis viajes
+[33m7957f0d[m Probando conexión de front con back
+[33m2b988b5[m Arreglo de rutas Épica de Viajes
+[33mac05a4a[m Épica de viajes
+[33mb8d51b6[m Mejorando UX en el update del user
+[33m3801b6a[m Corrijiendo Detalles de Rutas y funcionalidad de botones
+[33m7a93610[m Corrigiendo Vite agregando las rutas correctas para produccion
+[33mff15183[m Corrigiendo script y ruta que da la data del user
+[33mb26cb00[m Corrijiendo Rutas Otra vez
+[33me0c8a63[m Correcion de rutas de REACT a estático HTML para mostrar profile view y posteriormente edit profile
+[33maec0b5b[m Redirreccionamiento a Profile View y Edit profile dando click en boton con el Nombre
+[33mb346a04[m Corrijiendo bugs de redireccionamiento a rutas con boton convertirme en conductor
+[33m7405dd4[m Arreglando Botón dependiendo si tiene carro registrado o no
+[33md09ecc4[m Actualizar Dashboard para cargar datos desde backend y verificar vehículo registrado al convertirse en conductor
+[33md670ab5[m fix: Configurar build para copiar assets JS/CSS y procesar todos los HTML
+[33m9adbce3[m Agregar entry points HTML al build de Vite para evitar 404
+[33m3a33e59[m fix: Usar conductorRegistrado en lugar de rol para mostrar boton de conductor - Actualizar DashboardRider para leer conductorRegistrado del localStorage - Actualizar register-vehicle.js para guardar objeto user completo - Sincronizar con cambios del backend que eliminaron roles
+[33md27d7c6[m Merge branch 'main' of https://github.com/CamiloGutierrez1/Wheels-Final-Project
+[33mda99c73[m Solución de roles
+[33mb99432d[m feat: Implementar dashboard con React con dashboards de conductor y pasajero
+[33mead8e49[m Arreglando rutas
+[33m6002bf7[m Resuelto conflicto en app.js
+[33mf6ed843[m Guardo cambios locales antes de pull
+[33m8b8f932[m Correción Roles
+[33ma9dcfb1[m Backend corregido con los roles
+[33m9c07d0d[m Agregar URL del Front a CORS
+[33m2a6d7d4[m correcion
+[33m57d26ec[m correcion ruta css
+[33me2c62e3[m Actualizando Rutas con link de back en produccion
+[33m7bec113[m Ajuste de rutas para render
+[33me53e24a[m corrijiendo rutas
+[33mecc5048[m Arreglo de Rutas
+[33m97e5cd4[m Funcional Login - Register/ Register Vehicle Driver y Rider
+[33m81b3e5d[m Registro de Vehiculos implementado
+[33mba5bd23[m Select Role - Login/Sign Up - Personal Info - Log Out
+[33m1b0af02[m Role select - Login/Sign up - Profile - Edit Profile(aun no funcional) /Log out LISTOS para rider
+[33mffb92ac[m Registro Funcional con backend
+[33mc6130c2[m Login funcional con backend
+[33m71ad678[m Backend funcional
+[33m30515f0[m Vehicle edit and Vehicle Info
+[33m662b5e2[m Vehicle edit, vehicle info y log out
+[33mdfb7bd8[m Backend Primera entrega preliminar código
+[33m77640ea[m Registro Vehiculo
+[33m446c862[m Registro Listo
+[33m12344da[m Log in listo (falta pulir detalles)
+[33m938a7eb[m Corrección frontend
+[33m4bb9bcb[m Añadido frontend (role selection) y estructura del proyecto
+[33m62b7411[m Initial commit
