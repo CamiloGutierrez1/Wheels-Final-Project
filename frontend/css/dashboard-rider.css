@@ -29,12 +29,22 @@ body {
   min-height: 100vh;
 }
 
-/* Wrapper para Dashboard - PERMITE SCROLL */
+/* Wrapper para Dashboard - PERMITE SCROLL Y ASEGURA QUE EL CONTENIDO INICIE DESDE ARRIBA */
 .dashboard-page-wrapper {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  position: relative;
+  /* Asegurar que el scroll inicie desde arriba */
+  scroll-behavior: smooth;
+  /* Asegurar que el scroll sea visible y funcione correctamente */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Asegurar que al cargar la página, el scroll esté en la parte superior */
+.dashboard-page-wrapper:not(:has(.loading-screen)) {
+  scroll-padding-top: 0;
 }
 
 .dashboard-rider {
@@ -49,19 +59,23 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  /* Asegurar que el contenido inicie desde arriba */
+  align-items: flex-start;
 }
 
-/* HEADER - Mejorado */
+/* HEADER - Mejorado - Cambiado a relative para que siempre sea visible */
 .dashboard-header {
   width: 100%;
   background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
   padding: 20px 40px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .header-content {
@@ -163,6 +177,9 @@ body {
   margin: 0 auto;
   padding: 40px 20px;
   width: 100%;
+  flex: 1;
+  /* Asegurar que el contenido inicie después del header */
+  position: relative;
 }
 
 /* FILTROS - Mejorados */

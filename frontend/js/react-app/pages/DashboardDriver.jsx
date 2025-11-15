@@ -29,6 +29,16 @@ function DashboardDriver() {
     checkAuth();
     loadUserInfo();
     loadMyTrips();
+    // Asegurar que el scroll inicie desde arriba cuando se carga el componente
+    window.scrollTo(0, 0);
+    // También hacer scroll en el wrapper si existe
+    const wrapper = document.querySelector('.dashboard-page-wrapper');
+    if (wrapper) {
+      wrapper.scrollTop = 0;
+    }
+    // Forzar scroll en body y html
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   const checkAuth = () => {
