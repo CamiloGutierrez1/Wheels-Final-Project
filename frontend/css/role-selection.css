@@ -19,6 +19,22 @@ body {
     overflow: hidden;
 }
 
+/* Wrapper para React */
+.home-page-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(140deg, 
+        #C1C9C7 0%, 
+        #2E2D32 40%, 
+        #DDDDDD 74%, 
+        #000000 100%
+    );
+    overflow: auto;
+}
+
 .container {
     text-align: center;
     width: 90%;

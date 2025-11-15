@@ -290,6 +290,7 @@ function DashboardDriver() {
   };
 
   return (
+    <div className="dashboard-page-wrapper">
     <div className="dashboard-rider">
       {/* Header */}
       <header className="dashboard-header">
@@ -640,6 +641,7 @@ function DashboardDriver() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 
 // Importar todos los CSS necesarios
+import '../../css/react-global.css';
 import '../../css/role-selection.css';
 import '../../css/login.css';
 import '../../css/register-rider.css';

@@ -32,25 +32,27 @@ function Home() {
   };
 
   return (
-    <div className="container">
-      <div className="logo-section">
-        <h1 className="logo">
-          Wheels <span className="car-emoji">🚗</span>
-        </h1>
-        <p className="tagline">Fast and Secure</p>
-      </div>
+    <div className="home-page-wrapper">
+      <div className="container">
+        <div className="logo-section">
+          <h1 className="logo">
+            Wheels <span className="car-emoji">🚗</span>
+          </h1>
+          <p className="tagline">Fast and Secure</p>
+        </div>
 
-      <div className="role-selection">
-        <h2 className="title">Bienvenido a Wheels</h2>
-        <p className="subtitle">Comparte viajes de forma segura en tu universidad</p>
-        
-        <div className="action-buttons">
-          <button className="btn-primary" onClick={handleRegister}>
-            Registrarse
-          </button>
-          <button className="btn-secondary" onClick={handleLogin}>
-            Iniciar Sesión
-          </button>
+        <div className="role-selection">
+          <h2 className="title">Bienvenido a Wheels</h2>
+          <p className="subtitle">Comparte viajes de forma segura en tu universidad</p>
+          
+          <div className="action-buttons">
+            <button className="btn-primary" onClick={handleRegister}>
+              Registrarse
+            </button>
+            <button className="btn-secondary" onClick={handleLogin}>
+              Iniciar Sesión
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -23,6 +23,27 @@ body {
     padding: 50px;
 }
 
+/* Wrapper para React - Centra el contenido */
+.login-page-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, 
+        #C1C9C7 0%, 
+        #404040 40%, 
+        #000000 74%, 
+        #000000 100%
+    );
+    padding: 50px;
+    overflow: auto;
+}
+
+.login-page-wrapper .login-wrapper {
+    margin: 0 auto;
+}
+
 .login-wrapper {
     display: grid;
     grid-template-columns: 65% 35%;

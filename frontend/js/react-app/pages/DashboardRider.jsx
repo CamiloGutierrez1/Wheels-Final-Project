@@ -313,6 +313,7 @@ function DashboardRider() {
   };
 
   return (
+    <div className="dashboard-page-wrapper">
     <div className="dashboard-rider">
       {/* Header */}
       <header className="dashboard-header">
@@ -499,6 +500,7 @@ function DashboardRider() {
           onSuccess={handleReservationSuccess}
         />
       )}
+    </div>
     </div>
   );
 }

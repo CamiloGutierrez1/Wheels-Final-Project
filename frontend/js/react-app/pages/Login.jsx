@@ -112,7 +112,8 @@ function Login() {
   };
 
   return (
-    <div className="login-wrapper">
+    <div className="login-page-wrapper">
+      <div className="login-wrapper">
       {/* Left Side: Login Form */}
       <div className="login-section">
         <div className="login-content">
@@ -207,6 +208,7 @@ function Login() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
