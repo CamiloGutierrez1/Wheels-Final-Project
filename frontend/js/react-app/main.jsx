@@ -2,7 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 
-// Importar CSS
+// Importar todos los CSS necesarios
+import '../../css/role-selection.css';
+import '../../css/login.css';
+import '../../css/register-rider.css';
+import '../../css/register-vehicle.css';
+import '../../css/profile.css';
+import '../../css/profile-edit.css';
 import '../../css/dashboard-rider.css';
 
 // Ocultar pantalla de carga

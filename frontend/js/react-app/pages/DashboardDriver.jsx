@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'https://wheels-final-project.onrender.com/api';
 
 function DashboardDriver() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     origen: '',
     destino: '',
@@ -32,7 +34,7 @@ function DashboardDriver() {
   const checkAuth = () => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('authToken');
     if (!token) {
-      window.location.href = 'login.html';
+      navigate('/login', { replace: true });
       return false;
     }
     return true;
@@ -188,19 +190,17 @@ function DashboardDriver() {
       localStorage.removeItem('token');
       sessionStorage.clear();
       // Desde dashboard.html que está en pages/shared/, login.html está en el mismo directorio
-      window.location.href = 'login.html';
+      navigate('/login', { replace: true });
     }
   };
 
   const handleSwitchToRider = () => {
     // Cambiar al modo pasajero
-    window.location.href = 'dashboard.html#/dashboard/rider';
+    navigate('/dashboard/rider', { replace: true });
   };
 
   const handleGoToProfile = () => {
-    // Salir de React y navegar a la página HTML estática
-    // Desde dashboard.html en pages/shared/, profile-view.html está en el mismo directorio
-    window.location.href = window.location.origin + '/pages/shared/profile-view.html';
+    navigate('/profile/view');
   };
 
   const formatPrice = (price) => {

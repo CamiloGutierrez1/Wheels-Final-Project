@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FiltersSection from '../components/FiltersSection';
 import TripCard from '../components/TripCard';
 import TripModal from '../components/TripModal';
@@ -6,6 +7,7 @@ import TripModal from '../components/TripModal';
 const API_BASE_URL = 'https://wheels-final-project.onrender.com/api';
 
 function DashboardRider() {
+  const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,9 +45,8 @@ function DashboardRider() {
     
     if (!token) {
       console.log('❌ No hay token, redirigiendo al login');
-      // Desde dashboard.html que está en pages/shared/, login.html está en el mismo directorio
       setTimeout(() => {
-        window.location.href = 'login.html';
+        navigate('/login', { replace: true });
       }, 100);
       return false;
     }
@@ -255,16 +256,13 @@ function DashboardRider() {
     if (window.confirm('¿Estás seguro de que deseas cerrar sesión?')) {
       localStorage.removeItem('token');
       sessionStorage.clear();
-      // Desde dashboard.html que está en pages/shared/, login.html está en el mismo directorio
-      window.location.href = 'login.html';
+      navigate('/login', { replace: true });
     }
   };
 
   // Ir al perfil
   const handleGoToProfile = () => {
-    // Salir de React y navegar a la página HTML estática
-    // Usar profile-view.html para ambos (rider y driver) ya que maneja ambos roles
-    window.location.href = window.location.origin + '/pages/shared/profile-view.html';
+    navigate('/profile/view');
   };
 
   // Convertirse en conductor
@@ -298,19 +296,19 @@ function DashboardRider() {
           }
 
           // Redirigir al dashboard de conductor
-          window.location.href = 'dashboard.html#/dashboard/driver';
+          navigate('/dashboard/driver', { replace: true });
           return;
         }
       }
 
       // Si no tiene vehículo, redirigir a registro de vehículo
       console.log('ℹ️ Usuario sin vehículo, redirigiendo a registro');
-      window.location.href = 'register-vehicle.html';
+      navigate('/register/vehicle', { replace: true });
 
     } catch (error) {
       console.error('Error al verificar vehículo:', error);
       // En caso de error, redirigir a registro de vehículo por seguridad
-      window.location.href = 'register-vehicle.html';
+      navigate('/register/vehicle', { replace: true });
     }
   };
 
