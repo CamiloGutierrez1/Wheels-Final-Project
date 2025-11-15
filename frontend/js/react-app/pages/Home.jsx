@@ -38,7 +38,7 @@ function Home() {
           <h1 className="logo">
             Wheels <span className="car-emoji">🚗</span>
           </h1>
-          <p className="tagline">Fast and Secure</p>
+          <p className="tagline">Rapido y Seguro</p>
         </div>
 
         <div className="role-selection">

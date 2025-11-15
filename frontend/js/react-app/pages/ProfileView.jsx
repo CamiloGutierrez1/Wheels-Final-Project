@@ -132,8 +132,8 @@ function ProfileView() {
   if (loading || !user) {
     return (
       <div className="profile-wrapper">
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#fff' }}>
-          Cargando...
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#676262ff' }}>
+          
         </div>
       </div>
     );
@@ -146,8 +146,8 @@ function ProfileView() {
     <div className="profile-wrapper">
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="sidebar-item" onClick={handleGoToDashboard}>Home</div>
-        <div className="sidebar-item active">Personal Info</div>
+        <div className="sidebar-item" onClick={handleGoToDashboard}>Inicio</div>
+        <div className="sidebar-item active">Información Personal</div>
       </div>
 
       {/* Main Content */}
@@ -162,58 +162,49 @@ function ProfileView() {
 
         <div className="profile-card">
           <div className="logo-header">
-            <h1 className="logo">WHEELS <span className="car-icon">🚗</span></h1>
+            <h1 className="logo">WHEELS <span className="car-icon"> 🚗</span></h1>
           </div>
 
-          <h2 className="profile-title">Personal Info</h2>
+          <h2 className="profile-title">Información Personal</h2>
 
           {/* Personal Information */}
           <div className="info-section">
             <div className="info-row">
               <div className="info-group">
-                <label>Name</label>
+                <label>Nombre</label>
                 <div className="info-value">{user.nombre}</div>
               </div>
 
               <div className="info-group">
-                <label>Last Name</label>
+                <label>Apellido</label>
                 <div className="info-value">{user.apellido}</div>
               </div>
             </div>
 
             <div className="info-group">
-              <label>Corporate Email</label>
+              <label>Correo Institucional</label>
               <div className="info-value">{user.correo}</div>
             </div>
 
             <div className="info-group">
-              <label>University ID</label>
+              <label>ID Universitario</label>
               <div className="info-value">{user.idUniversidad}</div>
             </div>
 
             <div className="info-group">
-              <label>Phone Number</label>
+              <label>Teléfono</label>
               <div className="info-value">{user.telefono}</div>
             </div>
 
-            <div className="info-group">
-              <label>Set Password</label>
-              <div className="info-value">••••••••</div>
-            </div>
+            
 
-            <div className="info-group">
-              <label>Role</label>
-              <div className="role-toggle-view">
-                <span className={`role-badge ${isDriver ? 'active' : ''}`}>Driver</span>
-                <span className={`role-badge ${isRider ? 'active' : ''}`}>Rider</span>
-              </div>
-            </div>
+            
           </div>
 
           {isRider && (
             <div className="driver-upgrade-section">
               <div className="info-message">
-                <p>🚗 ¿Quieres ofrecer viajes como conductor?</p>
+                <p> ¿Quieres ofrecer viajes como conductor?</p>
                 <button className="btn-primary" onClick={handleBecomeDriver}>
                   Registrarme como Conductor
                 </button>
@@ -221,41 +212,10 @@ function ProfileView() {
             </div>
           )}
 
-          {/* Vehicle Info (solo para conductores) */}
-          {isDriver && vehicle && (
-            <div className="vehicle-section">
-              <h3 className="section-subtitle">Vehicle Information</h3>
-              
-              <div className="info-row">
-                <div className="info-group">
-                  <label>License Plate</label>
-                  <div className="info-value">{vehicle.placa || 'N/A'}</div>
-                </div>
-
-                <div className="info-group">
-                  <label>Make</label>
-                  <div className="info-value">{vehicle.marca || 'N/A'}</div>
-                </div>
-              </div>
-
-              <div className="info-row">
-                <div className="info-group">
-                  <label>Model</label>
-                  <div className="info-value">{vehicle.modelo || 'N/A'}</div>
-                </div>
-
-                <div className="info-group">
-                  <label>Capacity</label>
-                  <div className="info-value">{vehicle.capacidad || 'N/A'}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Action Buttons */}
           <div className="action-buttons">
             <button className="btn-secondary" onClick={() => navigate('/profile/edit')}>
-              Edit Profile
+              Editar Perfil
             </button>
             {isDriver && vehicle && (
               <button 
@@ -266,7 +226,7 @@ function ProfileView() {
               </button>
             )}
             <button className="btn-danger" onClick={handleLogout}>
-              Log out
+              Cerrar Sesión
             </button>
           </div>
         </div>

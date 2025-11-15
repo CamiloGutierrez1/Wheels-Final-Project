@@ -46,7 +46,7 @@ function FiltersSection({ onSearch }) {
               id="filterOrigen"
               name="origen"
               className="input-field"
-              placeholder="Ej: Universidad"
+              placeholder="Bogotá, Colombia"
               value={filters.origen}
               onChange={handleChange}
             />

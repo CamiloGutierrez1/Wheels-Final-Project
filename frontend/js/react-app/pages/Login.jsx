@@ -117,14 +117,14 @@ function Login() {
       {/* Left Side: Login Form */}
       <div className="login-section">
         <div className="login-content">
-          <h2 className="login-title">Log in to Wheels</h2>
+          <h2 className="login-title">Entra a Wheels</h2>
           
           <form onSubmit={handleSubmit} className="login-form">
             <input 
               type="email" 
               id="email" 
               name="email" 
-              placeholder="Email@domain.com"
+              placeholder="Email@unisabana.edu.co"
               className="input-field"
               value={email}
               onChange={(e) => {
@@ -138,7 +138,7 @@ function Login() {
               type="password" 
               id="password" 
               name="password" 
-              placeholder="Password"
+              placeholder="Contraseña"
               className="input-field"
               value={password}
               onChange={(e) => {
@@ -148,33 +148,21 @@ function Login() {
               required
             />
 
-            <div className="form-options">
-              <label className="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  id="rememberMe" 
-                  name="rememberMe"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <span>Remember me</span>
-              </label>
-              <a href="#" className="forgot-link">Forgot password?</a>
-            </div>
+          
 
             <button 
               type="submit" 
               className="btn-login"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Signing in...' : 'Iniciar Sesión'}
             </button>
 
             <p className="signup-text">
-              Don't have an account? <a href="#" className="signup-link" onClick={(e) => {
+              ¿No tienes cuenta aún? <a href="#" className="signup-link" onClick={(e) => {
                 e.preventDefault();
                 navigate('/register');
-              }}>Sign up</a>
+              }}>Regístrate.</a>
             </p>
           </form>
 
@@ -195,11 +183,9 @@ function Login() {
             <div className="pin-icon">📍</div>
           </div>
 
-          <h3 className="info-title">Speady, Easy and Fast</h3>
+          <h3 className="info-title">Viaja de manera simple y rápida</h3>
           <p className="info-description">
-            Commute rides with your campus peers. Work with each 
-            other to help fill up seats and save some money while 
-            providing company for your nearby friends and family.
+            Con Wheels puedes conectar con estudiantes que comparten tu ruta y hacer tus desplazamientos más cómodos y accesibles.
           </p>
 
           <div className="dots">

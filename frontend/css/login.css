@@ -168,13 +168,13 @@ body {
 
 .signup-text {
     text-align: center;
-    color: #b0b0b0;
+    color: #000000;
     font-size: 0.9rem;
     margin-top: 20px;
 }
 
 .signup-link {
-    color: rgb(255 252 252);
+    color: rgb(255, 255, 255);
     text-decoration: none;
     font-weight: 600;
 }
@@ -223,7 +223,7 @@ body {
 }
 
 .map-box {
-    background-color: #f5f0ff;
+    background-color: #DDDDDD;
     border-radius: 8px;
     padding: 70px;
     margin: 30px 0;

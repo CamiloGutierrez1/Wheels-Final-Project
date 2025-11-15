@@ -138,9 +138,8 @@ function RegisterRider() {
     <div className="register-wrapper">
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="sidebar-item">Role</div>
-        <div className="sidebar-item" onClick={() => navigate('/login')}>Sign In</div>
-        <div className="sidebar-item active">Sign Up</div>
+        <div className="sidebar-item" onClick={() => navigate('/login')}>Iniciar Sesión</div>
+        <div className="sidebar-item active">Registro</div>
       </div>
 
       <div className="register-content">
@@ -149,26 +148,19 @@ function RegisterRider() {
             <h1 className="logo">WHEELS <span className="car-icon">🚗</span></h1>
           </div>
 
-          <h2 className="register-title">Sign up to Wheels</h2>
+          <h2 className="register-title">Regístrate en Wheels</h2>
 
-          <div className="role-toggle">
-            <button type="button" className="toggle-btn" data-role="driver" disabled>
-              Driver
-            </button>
-            <button type="button" className="toggle-btn active" data-role="rider" disabled>
-              Rider
-            </button>
-          </div>
+          
 
           <form onSubmit={handleSubmit} className="register-form">
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="firstName">Name</label>
+                <label htmlFor="firstName">Nombre</label>
                 <input 
                   type="text" 
                   id="firstName" 
                   name="firstName" 
-                  placeholder="Juan David"
+                  placeholder="Juan "
                   className="input-field"
                   value={formData.firstName}
                   onChange={handleChange}
@@ -177,7 +169,7 @@ function RegisterRider() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
+                <label htmlFor="lastName">Apellido</label>
                 <input 
                   type="text" 
                   id="lastName" 
@@ -192,7 +184,7 @@ function RegisterRider() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="universityId">University ID</label>
+              <label htmlFor="universityId">ID Universitario</label>
               <input 
                 type="text" 
                 id="universityId" 
@@ -206,7 +198,7 @@ function RegisterRider() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Corporate Email</label>
+              <label htmlFor="email">Correo Corporativo</label>
               <input 
                 type="email" 
                 id="email" 
@@ -220,7 +212,7 @@ function RegisterRider() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
+              <label htmlFor="phone">Teléfono</label>
               <input 
                 type="tel" 
                 id="phone" 
@@ -234,7 +226,7 @@ function RegisterRider() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Contraseña</label>
               <input 
                 type="password" 
                 id="password" 
@@ -249,15 +241,15 @@ function RegisterRider() {
             </div>
 
             <button type="submit" className="btn-next" disabled={loading}>
-              {loading ? 'Processing...' : 'OK !'}
+              {loading ? 'Processing...' : 'OK '}
             </button>
 
             <p className="signin-text">
-              Already have an account? 
+              ¿Ya tienes una cuenta? 
               <a href="#" className="signin-link" onClick={(e) => {
                 e.preventDefault();
                 navigate('/login');
-              }}>Sign in</a>
+              }}>Iniciar sesión</a>
             </p>
           </form>
 

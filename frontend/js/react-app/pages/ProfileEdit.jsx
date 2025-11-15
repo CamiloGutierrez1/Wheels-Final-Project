@@ -234,9 +234,9 @@ function ProfileEdit() {
     <div className="profile-wrapper">
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="sidebar-item" onClick={handleGoToDashboard}>Home</div>
-        <div className="sidebar-item" onClick={() => navigate('/profile/view')}>Personal Info</div>
-        <div className="sidebar-item active">Edit Profile</div>
+        <div className="sidebar-item" onClick={handleGoToDashboard}>Inicio</div>
+        <div className="sidebar-item" onClick={() => navigate('/profile/view')}>Información Personal</div>
+        <div className="sidebar-item active">Editar Perfil</div>
       </div>
 
       {/* Main Content */}
@@ -254,14 +254,14 @@ function ProfileEdit() {
             <h1 className="logo">WHEELS <span className="car-icon">🚗</span></h1>
           </div>
 
-          <h2 className="profile-title">Edit Profile</h2>
+          <h2 className="profile-title">Editar Perfil</h2>
 
           <form onSubmit={handleSubmit} className="edit-form">
             {/* Personal Information */}
             <div className="form-section">
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="firstName">Name</label>
+                  <label htmlFor="firstName">Nombre</label>
                   <input 
                     type="text" 
                     id="firstName" 
@@ -274,7 +274,7 @@ function ProfileEdit() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="lastName">Last Name</label>
+                  <label htmlFor="lastName">Apellido</label>
                   <input 
                     type="text" 
                     id="lastName" 
@@ -288,7 +288,7 @@ function ProfileEdit() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="email">Corporate Email</label>
+                <label htmlFor="email">Correo Institucional</label>
                 <input 
                   type="email" 
                   id="email" 
@@ -296,12 +296,12 @@ function ProfileEdit() {
                   className="input-field"
                   value={formData.email}
                   readOnly
-                  style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
+                  style={{ backgroundColor: '#ffffffff', cursor: 'not-allowed' }}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="universityId">University ID</label>
+                <label htmlFor="universityId">ID Universitario</label>
                 <input 
                   type="text" 
                   id="universityId" 
@@ -314,7 +314,7 @@ function ProfileEdit() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone">Phone Number</label>
+                <label htmlFor="phone">Teléfono</label>
                 <input 
                   type="tel" 
                   id="phone" 
@@ -327,39 +327,39 @@ function ProfileEdit() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="currentPassword">Current Password</label>
+                <label htmlFor="currentPassword">Contraseña Actual</label>
                 <input
                   type="password"
                   id="currentPassword"
                   name="currentPassword"
                   className="input-field"
-                  placeholder="Enter current password"
+                  placeholder="Ingresa contraseña actual"
                   value={formData.currentPassword}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="newPassword">New Password</label>
+                <label htmlFor="newPassword">Nueva Contraseña</label>
                 <input
                   type="password"
                   id="newPassword"
                   name="newPassword"
                   className="input-field"
-                  placeholder="Enter new password (optional)"
+                  placeholder="Ingresa nueva contraseña"
                   value={formData.newPassword}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm New Password</label>
+                <label htmlFor="confirmPassword">Confirmar Nueva Contraseña</label>
                 <input
                   type="password"
                   id="confirmPassword"
                   name="confirmPassword"
                   className="input-field"
-                  placeholder="Confirm new password"
+                  placeholder="Confirma nueva contraseña"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   style={{
@@ -372,10 +372,10 @@ function ProfileEdit() {
             {/* Action Buttons */}
             <div className="action-buttons">
               <button type="submit" className="btn-save" disabled={loading}>
-                {loading ? 'Saving...' : 'Save Changes'}
+                {loading ? 'Guardando...' : 'Guardar Cambios'}
               </button>
               <button type="button" className="btn-danger" onClick={handleCancel}>
-                Cancel
+                Cancelar
               </button>
             </div>
           </form>
