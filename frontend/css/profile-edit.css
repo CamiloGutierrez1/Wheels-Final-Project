@@ -449,7 +449,7 @@ body {
     flex: 1;
     min-width: 150px;
     padding: 14px 20px;
-    background-color: #000000;
+    background: linear-gradient(140deg, #696c6b, #2e2d32 40%, #6c6a6a 74%, #949090);
     color: #ffffff;
     border: none;
     border-radius: 6px;
