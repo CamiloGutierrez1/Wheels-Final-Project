@@ -376,7 +376,7 @@ body {
 
 .input-field:read-only {
     background-color: #f0f0f0;
-    color: #999;
+    color: #000000;
     cursor: not-allowed;
 }
 
