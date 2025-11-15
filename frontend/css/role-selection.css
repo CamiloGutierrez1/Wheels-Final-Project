@@ -99,11 +99,16 @@ body {
     flex-wrap: wrap;
 }
 
-/* ✅ ACTUALIZADO: Mismo estilo que los botones originales */
+/* ✅ ACTUALIZADO: Mismo tamaño y colores del Figma */
 .btn-primary,
 .btn-secondary {
-    background-color: #FFFFFF;
-    color: #000000;
+    background: linear-gradient(140deg,
+        #696c6b 0%,
+        #2E2D32 40%,
+        #6c6a6a 74%,
+        #949090 100%
+    );
+    color: #FFFFFF;
     border: none;
     padding: 15px 50px;
     font-size: 1.2rem;
@@ -112,14 +117,15 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    min-width: 150px;
+    min-width: 200px;
+    width: 200px;
 }
 
 .btn-primary:hover,
 .btn-secondary:hover {
-    background-color: #f0f0f0;
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    opacity: 0.9;
 }
 
 .btn-primary:active,
@@ -180,7 +186,13 @@ body {
     }
     
     .btn-primary,
-    .btn-secondary,
+    .btn-secondary {
+        padding: 12px 40px;
+        font-size: 1rem;
+        min-width: 180px;
+        width: 180px;
+    }
+
     .role-btn {
         padding: 12px 40px;
         font-size: 1rem;
@@ -225,9 +237,14 @@ body {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .btn-primary,
-    .btn-secondary,
+    .btn-secondary {
+        width: 200px;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
     .role-btn {
         width: 100%;
         max-width: 250px;

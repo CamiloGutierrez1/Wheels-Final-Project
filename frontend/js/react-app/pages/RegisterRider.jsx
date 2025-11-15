@@ -19,7 +19,7 @@ function RegisterRider() {
   const selectedRole = 'rider'; // Fijo en rider
 
   const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@unisabana\.edu\.co$/;
     return emailRegex.test(email);
   };
 
@@ -33,7 +33,7 @@ function RegisterRider() {
 
     // Validar email
     if (!isValidEmail(data.email)) {
-      setError('Please enter a valid email address');
+      setError('Please enter a valid @unisabana.edu.co email address');
       return false;
     }
 
