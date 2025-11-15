@@ -30,15 +30,34 @@ function DashboardDriver() {
     loadUserInfo();
     loadMyTrips();
     // Asegurar que el scroll inicie desde arriba cuando se carga el componente
-    window.scrollTo(0, 0);
-    // También hacer scroll en el wrapper si existe
-    const wrapper = document.querySelector('.dashboard-page-wrapper');
-    if (wrapper) {
-      wrapper.scrollTop = 0;
-    }
-    // Forzar scroll en body y html
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    const scrollToTop = () => {
+      // Forzar scroll en todos los elementos posibles
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant'
+      });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      
+      // Asegurar que no haya transformaciones o posicionamientos que afecten el scroll
+      document.documentElement.style.scrollBehavior = 'auto';
+      document.body.style.scrollBehavior = 'auto';
+    };
+    
+    // Scroll inmediato
+    scrollToTop();
+    
+    // Scroll después de un pequeño delay para asegurar que se aplique
+    setTimeout(scrollToTop, 0);
+    setTimeout(scrollToTop, 50);
+    setTimeout(scrollToTop, 100);
+    
+    // Restaurar scroll-behavior después
+    setTimeout(() => {
+      document.documentElement.style.scrollBehavior = '';
+      document.body.style.scrollBehavior = '';
+    }, 200);
   }, []);
 
   const checkAuth = () => {
@@ -300,7 +319,6 @@ function DashboardDriver() {
   };
 
   return (
-    <div className="dashboard-page-wrapper">
     <div className="dashboard-rider">
       {/* Header */}
       <header className="dashboard-header">
@@ -651,7 +669,6 @@ function DashboardDriver() {
           </div>
         </div>
       )}
-    </div>
     </div>
   );
 }
