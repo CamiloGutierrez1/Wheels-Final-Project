@@ -102,12 +102,7 @@ body {
 /* ✅ ACTUALIZADO: Mismo tamaño y colores del Figma */
 .btn-primary,
 .btn-secondary {
-    background: linear-gradient(140deg,
-        #696c6b 0%,
-        #2E2D32 40%,
-        #6c6a6a 74%,
-        #949090 100%
-    );
+    background: linear-gradient(135deg, #000000 0%, #2e2e2e 100%);
     color: #FFFFFF;
     border: none;
     padding: 15px 30px;
