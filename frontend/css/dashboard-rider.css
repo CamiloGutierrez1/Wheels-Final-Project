@@ -52,7 +52,7 @@ body {
 /* HEADER - Mejorado - Siempre visible en la parte superior */
 .dashboard-header {
   width: 100%;
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #040404 0%, #8f8e8e 100%);
   padding: 20px 40px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -489,7 +489,7 @@ body {
 }
 
 .route-display {
-  background: linear-gradient(135deg, #5e5d5d 0%, #141414 100%);
+  background: linear-gradient(135deg, #2a2727, #141414);
   padding: 16px;
   border-radius: 10px;
   margin: 20px 0;

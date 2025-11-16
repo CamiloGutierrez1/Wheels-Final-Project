@@ -394,7 +394,7 @@ function DashboardDriver() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="ruta">Ruta (Puntos Intermedios)</label>
+                <label htmlFor="ruta">Ruta </label>
                 <p style={{ color: '#b0b0b0', fontSize: '0.85rem', marginBottom: '10px' }}>
                   Agrega los puntos intermedios de la ruta. El primer punto será el origen y el último el destino.
                 </p>
@@ -433,7 +433,7 @@ function DashboardDriver() {
                   className="btn-add-point"
                   style={{
                     padding: '10px 20px',
-                    background: 'linear-gradient(135deg, #4caf50 0%, #66bb6a 100%)',
+                    background: 'linear-gradient(135deg, #626262ff 0%, #3c3c3cff 100%)',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '8px',
@@ -442,7 +442,7 @@ function DashboardDriver() {
                     marginTop: '10px'
                   }}
                 >
-                  + Agregar Punto Intermedio
+                Agregar Punto Intermedio
                 </button>
               </div>
 
