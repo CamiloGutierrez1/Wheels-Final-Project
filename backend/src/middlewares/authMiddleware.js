@@ -56,34 +56,6 @@ const protegerRuta = async (req, res, next) => {
   }
 };
 
-/**
- * [DESHABILITADO] Middleware para verificar roles específicos
- * Ya no es necesario porque todos los usuarios pueden ser conductores y pasajeros
- */
-/*
-const verificarRol = (...rolesPermitidos) => {
-  return (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: 'No autorizado'
-      });
-    }
-
-    // Verificar si el usuario tiene uno de los roles permitidos
-    const tienePermiso = rolesPermitidos.includes(req.user.rol) || req.user.rol === 'ambos';
-
-    if (!tienePermiso) {
-      return res.status(403).json({
-        success: false,
-        message: 'No tienes permisos para realizar esta acción'
-      });
-    }
-
-    next();
-  };
-};
-*/
 
 module.exports = {
   protegerRuta,

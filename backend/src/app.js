@@ -6,7 +6,7 @@ const rateLimit = require('express-rate-limit');
 
 const app = express();
 
-// ===== MIDDLEWARES DE SEGURIDAD =====
+// MIDDLEWARES DE SEGURIDAD 
 app.use(helmet());
 
 // Configuración de CORS
@@ -34,12 +34,12 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// ===== MIDDLEWARES GENERALES =====
+//  MIDDLEWARES GENERALES 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ===== RUTAS =====
+// RUTAS
 // Ruta de prueba
 app.get('/', (req, res) => {
   res.json({ 
@@ -66,7 +66,7 @@ app.use('/api/trips', tripRoutes);
 const bookingRoutes = require('./routes/bookingRoutes');
 app.use('/api/bookings', bookingRoutes);
 
-// ===== MANEJO DE ERRORES =====
+
 // Ruta no encontrada (debe ir DESPUÉS de todas las rutas)
 app.use((req, res, next) => {
   res.status(404).json({
@@ -87,3 +87,5 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
+//APLICACIÓN UTRAVEL
