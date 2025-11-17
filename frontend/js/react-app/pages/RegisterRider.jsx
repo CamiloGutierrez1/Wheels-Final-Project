@@ -217,7 +217,7 @@ function RegisterRider() {
                 type="tel" 
                 id="phone" 
                 name="phone" 
-                placeholder="+57 3001234567"
+                placeholder="3001234567"
                 className="input-field"
                 value={formData.phone}
                 onChange={handleChange}
