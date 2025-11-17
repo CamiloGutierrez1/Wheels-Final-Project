@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true // Agrega createdAt y updatedAt automáticamente
 });
 
-// ===== MIDDLEWARES DEL SCHEMA =====
+// MIDDLEWARES DEL SCHEMA 
 
 // Encriptar contraseña antes de guardar
 userSchema.pre('save', async function(next) {
@@ -95,7 +95,7 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// ===== MÉTODOS DEL SCHEMA =====
+//  MÉTODOS DEL SCHEMA 
 
 // Método para comparar contraseñas
 userSchema.methods.compararPassword = async function(passwordIngresado) {
