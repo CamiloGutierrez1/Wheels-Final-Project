@@ -351,7 +351,7 @@ function DashboardRider() {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="logo-header">
-            <h1 className="logo-title">WHEELS <span className="car-icon">🚗</span></h1>
+            <h1 className="logo-title">UTravel <span className="car-icon">🚗</span></h1>
           </div>
           <div className="user-info">
             <span className="user-name" onClick={handleGoToProfile} style={{ cursor: 'pointer' }}>

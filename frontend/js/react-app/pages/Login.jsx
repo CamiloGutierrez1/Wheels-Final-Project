@@ -43,17 +43,17 @@ function Login() {
 
     // Validaciones básicas
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError('Por favor, completa todos los campos');
       return;
     }
 
     if (!isValidEmail(email)) {
-      setError('Please enter a valid email address');
+      setError('Por favor, ingresa un correo electrónico válido');
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
@@ -101,11 +101,11 @@ function Login() {
           navigate('/dashboard/rider', { replace: true });
         }
       } else {
-        throw new Error(data.message || 'Invalid credentials');
+        throw new Error(data.message || 'Credenciales inválidas');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError(error.message || 'Invalid credentials. Please try again.');
+      setError(error.message || 'Credenciales inválidas. Por favor, intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -117,7 +117,7 @@ function Login() {
       {/* Left Side: Login Form */}
       <div className="login-section">
         <div className="login-content">
-          <h2 className="login-title">Entra a Wheels</h2>
+          <h2 className="login-title">Entra a UTravel</h2>
           
           <form onSubmit={handleSubmit} className="login-form">
             <input 
@@ -177,7 +177,7 @@ function Login() {
       {/* Right Side: Info Card */}
       <div className="info-section">
         <div className="info-card">
-          <h1 className="wheels-logo">WHEELS <span className="car-icon">🚗</span></h1>
+          <h1 className="wheels-logo">UTravel <span className="car-icon"></span></h1>
           
           <div className="map-box">
             <div className="pin-icon">📍</div>
@@ -185,7 +185,7 @@ function Login() {
 
           <h3 className="info-title">Viaja de manera simple y rápida</h3>
           <p className="info-description">
-            Con Wheels puedes conectar con estudiantes que comparten tu ruta y hacer tus desplazamientos más cómodos y accesibles.
+            Con UTravel puedes conectar con estudiantes que comparten tu ruta y hacer tus desplazamientos más cómodos y accesibles.
           </p>
 
           <div className="dots">

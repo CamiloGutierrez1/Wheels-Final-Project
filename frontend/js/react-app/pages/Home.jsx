@@ -36,13 +36,13 @@ function Home() {
       <div className="container">
         <div className="logo-section">
           <h1 className="logo">
-            Wheels <span className="car-emoji">🚗</span>
+            UTravel <span className="car-emoji">🚗</span>
           </h1>
           <p className="tagline">Rapido y Seguro</p>
         </div>
 
         <div className="role-selection">
-          <h2 className="title">Bienvenido a Wheels</h2>
+          <h2 className="title">Bienvenido a UTravel</h2>
           <p className="subtitle">Comparte viajes de forma segura en tu universidad</p>
           
           <div className="action-buttons">

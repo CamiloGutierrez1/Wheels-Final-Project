@@ -162,7 +162,7 @@ function ProfileView() {
 
         <div className="profile-card">
           <div className="logo-header">
-            <h1 className="logo">WHEELS <span className="car-icon"> 🚗</span></h1>
+            <h1 className="logo">UTravel <span className="car-icon"> 🚗</span></h1>
           </div>
 
           <h2 className="profile-title">Información Personal</h2>

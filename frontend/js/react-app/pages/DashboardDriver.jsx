@@ -324,7 +324,7 @@ function DashboardDriver() {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="logo-header">
-            <h1 className="logo-title">WHEELS <span className="car-icon">🚗</span></h1>
+            <h1 className="logo-title">UTravel <span className="car-icon">🚗</span></h1>
           </div>
           <div className="user-info">
             <span className="user-name" onClick={handleGoToProfile} style={{ cursor: 'pointer' }}>
@@ -371,7 +371,7 @@ function DashboardDriver() {
                     id="origen"
                     name="origen"
                     className="input-field"
-                    placeholder="Ej: Universidad Nacional"
+                    placeholder="Ej: Universidad de la Sabana "
                     value={formData.origen}
                     onChange={handleChange}
                     required
@@ -385,7 +385,7 @@ function DashboardDriver() {
                     id="destino"
                     name="destino"
                     className="input-field"
-                    placeholder="Ej: Centro Comercial"
+                    placeholder="Ej: Centro Comercial Andino"
                     value={formData.destino}
                     onChange={handleChange}
                     required
@@ -396,7 +396,7 @@ function DashboardDriver() {
               <div className="form-group">
                 <label htmlFor="ruta">Ruta </label>
                 <p style={{ color: '#b0b0b0', fontSize: '0.85rem', marginBottom: '10px' }}>
-                  Agrega los puntos intermedios de la ruta. El primer punto será el origen y el último el destino.
+                  Agrega los puntos intermedios de la ruta.
                 </p>
                 {rutaPoints.map((point, index) => (
                   <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>

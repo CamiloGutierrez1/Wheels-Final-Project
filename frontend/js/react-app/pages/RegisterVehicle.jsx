@@ -43,7 +43,7 @@ function RegisterVehicle() {
       setVehiclePhotoName(e.target.files[0].name);
     } else {
       setVehiclePhoto(null);
-      setVehiclePhotoName('No file chosen');
+      setVehiclePhotoName('No hay archivo seleccionado');
     }
     setError('');
   };
@@ -54,7 +54,7 @@ function RegisterVehicle() {
       setSoatPhotoName(e.target.files[0].name);
     } else {
       setSoatPhoto(null);
-      setSoatPhotoName('No file chosen');
+      setSoatPhotoName('No hay archivo seleccionado');
     }
     setError('');
   };
@@ -70,19 +70,19 @@ function RegisterVehicle() {
 
   const validateVehicleForm = (data) => {
     if (!data.licensePlate || data.licensePlate.trim().length < 5) {
-      setError('Please enter a valid license plate');
+      setError('Por favor, ingresa una placa válida');
       return false;
     }
     if (!data.make || !data.make.trim()) {
-      setError('Please enter a vehicle make');
+      setError('Por favor, ingresa la marca del vehículo');
       return false;
     }
     if (!data.model || !data.model.trim()) {
-      setError('Please enter a vehicle model');
+      setError('Por favor, ingresa el modelo del vehículo');
       return false;
     }
     if (!data.capacity || data.capacity === '') {
-      setError('Please select vehicle capacity');
+      setError('Por favor, selecciona la capacidad del vehículo');
       return false;
     }
     return true;
@@ -187,7 +187,7 @@ function RegisterVehicle() {
 
     } catch (error) {
       console.error('Error al registrar vehículo:', error);
-      setError(error.message || 'Registration failed. Please try again.');
+      setError(error.message || 'Error al registrar vehículo. Por favor, intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -197,26 +197,24 @@ function RegisterVehicle() {
     <div className="register-wrapper">
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="sidebar-item">Role</div>
-        <div className="sidebar-item" onClick={() => navigate('/login')}>Sign In</div>
-        <div className="sidebar-item" onClick={() => navigate('/register')}>Sign Up</div>
-        <div className="sidebar-item active">Vehicle Details</div>
+        <div className="sidebar-item" onClick={() => navigate('/dashboard/rider')}>Home</div>
+        <div className="sidebar-item active">Registro Vehículo</div>
       </div>
 
       {/* Main Content */}
       <div className="register-content">
         <div className="register-card">
           <div className="logo-header">
-            <h1 className="logo">WHEELS <span className="car-icon">🚗</span></h1>
+            <h1 className="logo">UTravel <span className="car-icon">🚗</span></h1>
           </div>
 
-          <h2 className="register-title">Vehicle Details</h2>
+          <h2 className="register-title">Registro de Vehículo</h2>
 
           {/* Vehicle Form */}
           <form onSubmit={handleSubmit} className="register-form">
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="licensePlate">License Plate Number</label>
+                <label htmlFor="licensePlate">Número de Placa</label>
                 <input 
                   type="text" 
                   id="licensePlate" 
@@ -230,7 +228,7 @@ function RegisterVehicle() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="make">Vehicle Make</label>
+                <label htmlFor="make">Marca del Vehículo</label>
                 <input 
                   type="text" 
                   id="make" 
@@ -245,7 +243,7 @@ function RegisterVehicle() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="vehiclePhoto">Upload Vehicle Photo</label>
+              <label htmlFor="vehiclePhoto">Subir Foto del Vehículo</label>
               <input 
                 type="file" 
                 id="vehiclePhoto" 
@@ -264,7 +262,7 @@ function RegisterVehicle() {
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="model">Vehicle Model</label>
+                <label htmlFor="model">Modelo del Vehículo</label>
                 <input 
                   type="text" 
                   id="model" 
@@ -278,7 +276,7 @@ function RegisterVehicle() {
               </div>
 
               <div className="form-group">
-                <label>Vehicle Capacity</label>
+                <label>Capacidad del Vehículo</label>
                 <div className="capacity-buttons">
                   {[1, 2, 3, 4, 5].map((capacity) => (
                     <button
@@ -296,7 +294,7 @@ function RegisterVehicle() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="soatPhoto">Upload SOAT Photo</label>
+              <label htmlFor="soatPhoto">Subir Foto del SOAT</label>
               <input 
                 type="file" 
                 id="soatPhoto" 
@@ -330,4 +328,5 @@ function RegisterVehicle() {
 }
 
 export default RegisterVehicle;
+
 

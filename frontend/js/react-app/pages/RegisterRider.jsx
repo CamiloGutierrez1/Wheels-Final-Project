@@ -27,31 +27,31 @@ function RegisterRider() {
     // Validar campos vacíos
     if (!data.firstName || !data.lastName || !data.universityId || 
         !data.email || !data.phone || !data.password) {
-      setError('Please fill in all fields');
+      setError('Por favor, completa todos los campos');
       return false;
     }
 
     // Validar email
     if (!isValidEmail(data.email)) {
-      setError('Please enter a valid @unisabana.edu.co email address');
+      setError('Por favor, ingresa un correo @unisabana.edu.co válido');
       return false;
     }
 
     // Validar ID universitario (solo números)
     if (!/^\d+$/.test(data.universityId)) {
-      setError('University ID must contain only numbers');
+      setError('El ID universitario debe contener solo números');
       return false;
     }
 
     // Validar teléfono (formato básico)
     if (data.phone.length < 10) {
-      setError('Please enter a valid phone number');
+      setError('Por favor, ingresa un número de teléfono válido');
       return false;
     }
 
     // Validar contraseña
     if (data.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError('La contraseña debe tener al menos 6 caracteres');
       return false;
     }
 
@@ -119,7 +119,7 @@ function RegisterRider() {
 
     } catch (error) {
       console.error('Registration error:', error);
-      setError(error.message || 'Registration failed. Please try again.');
+      setError(error.message || 'Error al registrar. Por favor, intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -145,10 +145,10 @@ function RegisterRider() {
       <div className="register-content">
         <div className="register-card">
           <div className="logo-header">
-            <h1 className="logo">WHEELS <span className="car-icon">🚗</span></h1>
+            <h1 className="logo">UTravel <span className="car-icon">🚗</span></h1>
           </div>
 
-          <h2 className="register-title">Regístrate en Wheels</h2>
+          <h2 className="register-title">Regístrate en UTravel</h2>
 
           
 
@@ -189,7 +189,7 @@ function RegisterRider() {
                 type="text" 
                 id="universityId" 
                 name="universityId" 
-                placeholder="0000123456"
+                placeholder="123456"
                 className="input-field"
                 value={formData.universityId}
                 onChange={handleChange}
@@ -203,7 +203,7 @@ function RegisterRider() {
                 type="email" 
                 id="email" 
                 name="email" 
-                placeholder="juanrodriguez@unisabana.edu.co"
+                placeholder="juanrodri@unisabana.edu.co"
                 className="input-field"
                 value={formData.email}
                 onChange={handleChange}
@@ -265,4 +265,5 @@ function RegisterRider() {
 }
 
 export default RegisterRider;
+
 

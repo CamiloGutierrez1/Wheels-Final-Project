@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             soatPhotoName.textContent = e.target.files[0].name;
             soatPhotoName.classList.add('has-file');
         } else {
-            soatPhotoName.textContent = 'No file chosen';
+            soatPhotoName.textContent = 'No hay archivo seleccionado';
             soatPhotoName.classList.remove('has-file');
         }
     });
