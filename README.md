@@ -7,7 +7,8 @@ https://wheels-final-project-frontend.onrender.com
 ## 🛠️ Tecnologías
 - Figma
 - HTML
-- CSS 
+- CSS
+- JavaScript
 - React
   
 
